@@ -5,3 +5,8 @@ services:
       context: ../macscode-front
     ports:
       - "3000:3000"
+  macscode-dummy-back:
+    build:
+      context: ../macscode
+    ports:
+      - "8080:8080"
