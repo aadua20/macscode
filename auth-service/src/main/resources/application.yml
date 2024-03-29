@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: auth-service
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: validate
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:AUTH_SERVICE
+    username: sa
+    password:
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
+server:
+  port: 8081
