@@ -1,12 +1,16 @@
 package com.freeuni.macs.authservice.service;
 
 import com.freeuni.macs.authservice.exception.UserAuthException;
+import com.freeuni.macs.authservice.model.api.AuthResponse;
+import com.freeuni.macs.authservice.model.api.SignInRequest;
 import com.freeuni.macs.authservice.model.db.User;
 import com.freeuni.macs.authservice.repository.UserRepository;
+import com.freeuni.macs.authservice.security.JwtService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.h2.security.auth.AuthConfigException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -19,16 +23,37 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public User validateUser(String username, String password) {
-        return null;
+    private final JwtService jwtService;
+
+    private final AuthenticationManager authenticationManager;
+
+    public AuthResponse validateUser(SignInRequest signInRequest) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        signInRequest.getUsername(),
+                        signInRequest.getPassword()
+                )
+        );
+        User user = userRepository.
+                findByUsername(signInRequest.getUsername())
+                .orElseThrow(() -> new UserAuthException(
+                        "User with username {} does not exist", signInRequest.getUsername()
+                ));
+        String jwt = jwtService.generateToken(user);
+        return AuthResponse.builder()
+                .token(jwt)
+                .build();
     }
 
-    public User registerUser(User user) {
-        Optional<User> userDB = userRepository.findByEmail(user.getEmail());
+    public AuthResponse registerUser(User user) {
+        Optional<User> userDB = userRepository.findByEmailIgnoreCase(user.getEmail());
         if (userDB.isPresent()) {
             throw new UserAuthException("Account with email {} already exists.", user.getEmail());
         }
-        return userRepository.save(user);
+        userRepository.save(user);
+        String jwt = jwtService.generateToken(user);
+        return AuthResponse.builder()
+                .token(jwt)
+                .build();
     }
-
 }

@@ -1,5 +1,6 @@
 package com.freeuni.macs.authservice.exception;
 
+import com.freeuni.macs.authservice.model.api.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -8,7 +9,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import com.azry.aid2qtx.bankservice.model.api.ErrorResponse;
 
 import java.util.List;
 
