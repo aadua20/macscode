@@ -1,1 +1,1 @@
-CREATE SCHEMA IF NOT EXISTS auth_service_schema;
+CREATE SCHEMA IF NOT EXISTS macscode_schema;

@@ -16,15 +16,17 @@ services:
     ports:
       - "8081:8081"
   db:
-    image: 'postgres:15.3-alpine'
+    image: 'postgres:14'
     container_name: db
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=db_dmtp
-      - POSTGRES_USER=user
+      - POSTGRES_DB=macscode_db
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=pass
+    networks:
+      - macs_network
 volumes:
   pgdata:
