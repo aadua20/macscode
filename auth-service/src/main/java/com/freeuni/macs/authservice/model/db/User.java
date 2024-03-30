@@ -1,5 +1,6 @@
 package com.freeuni.macs.authservice.model.db;
 
+import com.freeuni.macs.authservice.model.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -29,5 +30,7 @@ public class User {
     @Email
     private String email;
 
-    private String hashedPassword;
+    private String password;
+
+    private Role role;
 }
