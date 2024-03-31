@@ -5,11 +5,13 @@ services:
       context: ../macscode-front
     ports:
       - "3000:3000"
+      
   macscode-dummy-back:
     build:
       context: ../macscode
     ports:
       - "8080:8080"
+      
   auth-service:
     build:
       context: ../auth-service
@@ -18,6 +20,11 @@ services:
     depends_on:
       db:
         condition: service_started
+    networks:
+      - macscode_network
+    env_file:
+      - .env
+      
   db:
     image: 'postgres:16.2'
     container_name: db
@@ -25,9 +32,12 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=macscode_db
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=pass
+    networks:
+      - macscode_network
+    env_file:
+      - .env
+
 volumes:
   pgdata:
+networks:
+  macscode_network:
