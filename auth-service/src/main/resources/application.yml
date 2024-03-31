@@ -11,12 +11,16 @@ spring:
     url: jdbc:postgresql://localhost:5432/macscode_db
     username: postgres
     password: pass
+    driverClassName: org.postgresql.Driver
   flyway:
     baseline-on-migrate: true
-    default-schema: auth_service_schema
+    default-schema: macscode_schema
 springdoc:
   swagger-ui:
     path: /swagger-ui
 server:
   context-path: /auth
   port: 8081
+
+jwt:
+  secret: macscodesecretkeymacscodesecretkeymacscodesecretkeymacscodese

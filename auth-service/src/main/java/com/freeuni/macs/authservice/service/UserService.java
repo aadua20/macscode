@@ -28,12 +28,16 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
 
     public AuthResponse validateUser(SignInRequest signInRequest) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        signInRequest.getUsername(),
-                        signInRequest.getPassword()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            signInRequest.getUsername(),
+                            signInRequest.getPassword()
+                    )
+            );
+        } catch (Exception e) {
+            throw new UserAuthException("Invalid credentials");
+        }
         User user = userRepository.
                 findByUsername(signInRequest.getUsername())
                 .orElseThrow(() -> new UserAuthException(

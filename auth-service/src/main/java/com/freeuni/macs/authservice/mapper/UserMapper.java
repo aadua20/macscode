@@ -5,7 +5,6 @@ import com.freeuni.macs.authservice.model.api.UserDTO;
 import com.freeuni.macs.authservice.model.db.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 @Service

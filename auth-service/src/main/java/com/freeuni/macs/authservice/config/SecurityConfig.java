@@ -28,8 +28,8 @@ public class SecurityConfig {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/auth/*")
-                        .authenticated().anyRequest().permitAll())
+                        .requestMatchers("**").permitAll() // TODO: 3/31/2024 some pages shouldn't be accessed
+                        .anyRequest().authenticated())
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
