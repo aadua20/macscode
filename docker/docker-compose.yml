@@ -1,18 +1,21 @@
 version: '3'
 services:
   front:
+    container_name: front-container
     build:
       context: ../macscode-front
     ports:
       - "3000:3000"
-      
+
   macscode-dummy-back:
+    container_name: macscode-dummy
     build:
       context: ../macscode
     ports:
       - "8080:8080"
-      
+
   auth-service:
+    container_name: auth-service
     build:
       context: ../auth-service
     ports:
@@ -24,7 +27,7 @@ services:
       - macscode_network
     env_file:
       - .env
-      
+
   db:
     image: 'postgres:16.2'
     container_name: db
