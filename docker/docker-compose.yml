@@ -3,7 +3,7 @@ services:
   front:
     container_name: front-container
     build:
-      context: ../macscode-front
+      context: ../macscode-ui
     ports:
       - "3000:3000"
 
