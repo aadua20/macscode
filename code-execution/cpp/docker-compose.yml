@@ -1,0 +1,11 @@
+version: '3'
+services:
+  cpp-code-runner:
+    build:
+      context: .
+    volumes:
+      - ./example:/app/execution
+    container_name: cpp-example-container
+    user: "${UID}:${GID}"
+    environment:
+      - test_count=2
