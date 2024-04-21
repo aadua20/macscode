@@ -45,16 +45,4 @@ for i in range(16, 22):
         }
         tests_collection.insert_one(new_test)
 
-# Now you can perform operations on the collection, for example:
-# Insert a document
-# result = collection.insert_one({"key": "value"})
-
-# # Find documents
-# documents = collection.find()
-#
-# # Iterate over documents
-# for document in documents:
-#     print(document)
-
-# Close the connection when done
 client.close()
