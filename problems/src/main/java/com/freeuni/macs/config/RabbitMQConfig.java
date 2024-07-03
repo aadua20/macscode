@@ -1,8 +1,9 @@
 package com.freeuni.macs.config;
 
-import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,12 +20,6 @@ public class RabbitMQConfig {
     public static final String RESPONSE_EXCHANGE = "responseExchange";
     public static final String RESPONSE_ROUTING_KEY = "response.routingKey";
 
-//    @Bean
-//    public AmqpTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-//        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-//        rabbitTemplate.setMessageConverter(producerJackson2MessageConverter());
-//        return rabbitTemplate;
-//    }
 
     @Bean
     public Jackson2JsonMessageConverter producerJackson2MessageConverter() {
