@@ -6,10 +6,7 @@ import com.freeuni.macs.repository.ProblemRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,14 +16,20 @@ public class ProblemService {
     private final ProblemRepository problemRepository;
     private final TestService testService;
     private final String EXECUTION_API_URL;
+    private final RabbitMQProducer rabbitMQProducer;
+    private final RabbitMQResponseListener rabbitMQResponseListener;
 
     @Autowired
     public ProblemService(final ProblemRepository problemRepository,
                           final TestService testService,
-                          final @Value("${execution.service.url}") String executionApiUrl) {
+                          final @Value("${execution.service.url}") String executionApiUrl,
+                          final RabbitMQProducer rabbitMQProducer,
+                          final RabbitMQResponseListener rabbitMQResponseListener) {
         this.problemRepository = problemRepository;
         this.testService = testService;
         this.EXECUTION_API_URL = executionApiUrl;
+        this.rabbitMQProducer = rabbitMQProducer;
+        this.rabbitMQResponseListener = rabbitMQResponseListener;
     }
 
     private ProblemDto convertProblemToProblemDto(Problem problem) {
@@ -91,22 +94,29 @@ public class ProblemService {
 
     private List<SubmitResponse> runProblemOnTests(SubmitRequest solution, Problem problem, List<Test> problemTests) {
         SubmissionRequest submissionRequest = getSubmissionRequest(solution, problem, problemTests);
+        rabbitMQProducer.sendSubmissionRequest(submissionRequest);
+        List<SubmitResponse> responses;
+        try {
+            responses = rabbitMQResponseListener.getResponses();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
-        RestTemplate restTemplate = new RestTemplate();
+//        RestTemplate restTemplate = new RestTemplate();
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        HttpEntity<SubmissionRequest> requestEntity = new HttpEntity<>(submissionRequest, headers);
+//
+//        ParameterizedTypeReference<List<SubmitResponse>> typeRef = new ParameterizedTypeReference<>() {
+//        };
+//        ResponseEntity<List<SubmitResponse>> responseEntity = restTemplate.exchange(
+//                String.format("%s/submission", EXECUTION_API_URL),
+//                HttpMethod.POST,
+//                requestEntity,
+//                typeRef);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<SubmissionRequest> requestEntity = new HttpEntity<>(submissionRequest, headers);
-
-        ParameterizedTypeReference<List<SubmitResponse>> typeRef = new ParameterizedTypeReference<>() {
-        };
-        ResponseEntity<List<SubmitResponse>> responseEntity = restTemplate.exchange(
-                String.format("%s/submission", EXECUTION_API_URL),
-                HttpMethod.POST,
-                requestEntity,
-                typeRef);
-
-        return responseEntity.getBody();
+        return responses;
     }
 
     private Problem getProblemById(final ObjectId id) throws ProblemNotFoundException {

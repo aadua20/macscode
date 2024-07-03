@@ -6,6 +6,12 @@ spring:
       database: problems-db
       host: localhost
       port: 9100
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
 execution:
   service:
     url: http://localhost:8085

@@ -1,7 +1,11 @@
-spring.application.name=executor
-server.port=8085
-spring.rabbitmq.host=localhost
-spring.rabbitmq.port=5672
-spring.rabbitmq.username=guest
-spring.rabbitmq.password=guest
-spring.main.allow-bean-definition-overriding=true
+spring:
+  application:
+    name: executor
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+server:
+  port: 8085
