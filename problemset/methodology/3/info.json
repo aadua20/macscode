@@ -1,6 +1,6 @@
 {
   "description": "Fix avenues: fill columns (0, 4, 8, 12...) with beepers. End on the last column's first row facing east.",
-  "name": "Earthquake",
+  "name": "StoneMason",
   "problem_id": {
     "order": 3,
     "course": "MET"

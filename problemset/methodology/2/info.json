@@ -1,6 +1,6 @@
 {
   "description": "Move karel out of the house, pick up the newspaper and return on the starting position.",
-  "name": "Read The NewsPaper",
+  "name": "CollectNewspaper",
   "problem_id": {
     "order": 2,
     "course": "MET"

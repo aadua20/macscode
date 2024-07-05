@@ -1,71 +1,126 @@
 public class Solution extends Karel {
 
-    //on odd rows (1, 3, 5, 7...) karel puts beepers on odd positions (1, 3, 5...)
-    private void ODD() {
-        putBeeper();
-        while(frontIsClear()) {
-            move();
-            if(frontIsClear()) {
-                move();
-                putBeeper();
-            }
-        }
-    }
-
-
-    //on even rows (2, 4 ,6...) karel puts beepers on even positions (2, 4, 6...)
-    private void EVEN() {
-        while(frontIsClear()) {
-            move();
-            putBeeper();
-            if(frontIsClear()) {
-                move();
-            }
-        }
-    }
-
-    // after filling a row, karel must face north.
-    private void position() {
-        if(facingEast()) {
-            turnLeft();			//if karel is on the last position of any row (facing east) it will turn left (face north)
-        }else {
-            turnRight();		//if karel is on the first position of any row (facing west) it will turn right (face north)
-        }
-
-    }
-
-
-    //after moving to a new row karel must decide to turn left or right
-    private void leftOrRight() {
-        if(leftIsBlocked()) {
-            turnRight();		//if there is a wall on the left of karel it turns right
-        }else {
-            turnLeft();			//if there is a wall on the right of karel it turns left
-        }
-    }
-
-    private void mainMove() {
-        while(frontIsClear()) {
-            if(noBeepersPresent()) {	// if there are no beepers on the last position of a row this means that next row is odd and we must put beeper on the first position of a new row
-                move();				//karel moves on a new row if front is clear (it is facing north)
-                leftOrRight();
-                ODD();
-            }else {					//if there is a beeper on the last position of a row this means that next row is even  and we can't put beeper on the first position of a new row
-                move();
-                leftOrRight();
-                EVEN();
-            }
-
-            position();			//on the last row there will be wall in front of karel and this while loop will end
-        }
-
-    }
-
-
     public void run() {
-        ODD();			//this fills the first row
-        position();		//face north
-        mainMove();		//fills every row (until front is blocked)
+        putBeeper();
+        walkToWall();
+        putBeeper();
+        turnAround();
+        walkToBeeper();
+        while (noBeepersPresent()){
+            putBeeper();
+            turnAround();
+            walkToBeeper();
+        }
+        clearRightOfCenter();
+        clearLeftOfCenter();
+        turnAround();
+        walkToBeeper();
+        move();
+
     }
 
+    /* METHOD: clearRightOfCenter()
+     *
+     * This will clear all Beepers to the right of the Center.
+     *
+     * pre-condition:
+     * Karel is in the middle of the grid standing on a beeper,
+     * facing East.
+     *
+     * post-condition:
+     * Karel is standing at the far-right of the first row, having
+     * cleared all the beepers from the center along the way.
+     */
+
+    private void clearRightOfCenter(){
+        clearToWall();
+    }
+
+    /* METHOD: clearRightOfCenter()
+     *
+     * This will clear all Beepers to the wall in whatever way
+     * Karel is facing. There can only be one or zero beepers on
+     * each square.
+     *
+     * pre-condition:
+     * Karel is facing in any direction.
+     *
+     * post-condition:
+     * Karel has now travelled to the wall and has cleared all
+     * beepers along the way.
+     */
+
+    private void clearToWall(){
+        while (frontIsClear()){
+            move();
+            if (beepersPresent()){
+                pickBeeper();
+            }
+        }
+    }
+
+    /* METHOD: clearLeftOfCenter()
+     *
+     * Karel will turn around, walk to the center beeper, than
+     * walk to the left wall clearing all the beepes along
+     * the way.
+     *
+     * pre-condition:
+     * Karel is at the far right corner of bottom row facing East
+     * with no beepers between Karel and the center beeper.
+     *
+     * post-condition:
+     * Karel is standing at the far-left corner of the first row,
+     * facing west, having cleared all the beepers from the center
+     * to the left wall. There is no only one beeper in the center
+     * of the bottom row.
+     */
+
+    private void clearLeftOfCenter(){
+        turnAround();
+        walkToBeeper();
+        move();
+        while (frontIsClear()){
+            move();
+            pickBeeper();
+        }
+    }
+
+    /* METHOD: walkToWall()
+     *
+     * Facing in any direction, Karel will walk until he hits a
+     * wall.
+     */
+
+    private void walkToWall(){
+        while (frontIsClear()){
+            move();
+        }
+    }
+
+    /* METHOD: walkToBeeper()
+     *
+     * Facing in any direction, Karel will walk until there is a
+     * beeper directly in front of him.
+     */
+
+    private void walkToBeeper(){
+        move();
+        while (noBeepersPresent()){
+            move();
+        }
+        moveBackward();
+    }
+
+    /* METHOD: moveBackware()
+     *
+     * Karel will move backward one square while remaining
+     * facing in the same direction.
+     */
+
+    private void moveBackward(){
+        turnAround();
+        move();
+        turnAround();
+    }
 }
