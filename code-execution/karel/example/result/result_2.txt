@@ -1,2 +1,12 @@
-FAIL
-FAIL
+COMPILE_ERROR
+src/Solution.java:44: error: cannot find symbol
+                leftOrRight();
+                ^
+  symbol:   method leftOrRight()
+  location: class Solution
+src/Solution.java:48: error: cannot find symbol
+                leftOrRight();
+                ^
+  symbol:   method leftOrRight()
+  location: class Solution
+2 errors

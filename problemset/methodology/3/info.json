@@ -7,7 +7,7 @@
   },
   "topics": ["Karel"],
   "type": "KAREL",
-  "test_count": 2,
+  "test_count": 3,
   "difficulty": "Easy",
-  "public_test_count": 2
+  "public_test_count": 3
 }

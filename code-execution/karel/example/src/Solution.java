@@ -1,50 +1,71 @@
 public class Solution extends Karel {
 
-    // this method builds column.
-    private void fillColumn() {
-        turnLeft();
-        if(noBeepersPresent()) {
-            putBeeper();			//puts beeper on the first position of columns
-        }
+    //on odd rows (1, 3, 5, 7...) karel puts beepers on odd positions (1, 3, 5...)
+    private void ODD() {
+        putBeeper();
         while(frontIsClear()) {
             move();
-            if(noBeepersPresent()) {
-                putBeeper();		//karel puts beepers on every point of columns
-            }
-        }
-    }
-
-    // precondition: karel is on the top of a column facing north.
-    private void startingPosition() {
-        turnAround();
-        while(frontIsClear()) {
-            move();
-        }
-        turnLeft();					//post condition: karel returns to its starting position
-    }
-
-    // this method moves karel to new column.
-    private void nextAvenue() {
-        for(int i = 0; i < 4; i++) {
             if(frontIsClear()) {
-                move();				//karel moves forward 4 times if front is clear
+                move();
+                putBeeper();
             }
         }
     }
 
 
-    //precondition: karel is on (1,1) position facing east.
-    public void run() {
+    //on even rows (2, 4 ,6...) karel puts beepers on even positions (2, 4, 6...)
+    private void EVEN() {
         while(frontIsClear()) {
-            fillColumn();
-            startingPosition();
-            nextAvenue();			//karel "builds" columns on every fourth position of rows (1st, 5th, 9th, etc.)
+            move();
+            putBeeper();
+            if(frontIsClear()) {
+                move();
+            }
         }
-        fillColumn();				//because the condition of "while" is "whileFrontIsClear()"
-        //karel needs to build wall on the last position too,
-        //because front is not clear anymore
-
-
-        startingPosition();			//just to return to its starting position
     }
+
+    // after filling a row, karel must face north.
+    private void position() {
+        if(facingEast()) {
+            turnLeft();			//if karel is on the last position of any row (facing east) it will turn left (face north)
+        }else {
+            turnRight();		//if karel is on the first position of any row (facing west) it will turn right (face north)
+        }
+
+    }
+
+
+    //after moving to a new row karel must decide to turn left or right
+    private void leftOrRight() {
+        if(leftIsBlocked()) {
+            turnRight();		//if there is a wall on the left of karel it turns right
+        }else {
+            turnLeft();			//if there is a wall on the right of karel it turns left
+        }
+    }
+
+    private void mainMove() {
+        while(frontIsClear()) {
+            if(noBeepersPresent()) {	// if there are no beepers on the last position of a row this means that next row is odd and we must put beeper on the first position of a new row
+                move();				//karel moves on a new row if front is clear (it is facing north)
+                leftOrRight();
+                ODD();
+            }else {					//if there is a beeper on the last position of a row this means that next row is even  and we can't put beeper on the first position of a new row
+                move();
+                leftOrRight();
+                EVEN();
+            }
+
+            position();			//on the last row there will be wall in front of karel and this while loop will end
+        }
+
+    }
+
+
+    public void run() {
+        ODD();			//this fills the first row
+        position();		//face north
+        mainMove();		//fills every row (until front is blocked)
+    }
+
 }

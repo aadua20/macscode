@@ -66,7 +66,10 @@ public class Main {
 
         System.out.println(solution.getGridRepresentation());
 
-        if (h - 1 - solution.getM() == expectedM && solution.getN() == expectedN && solution.getDirection().getValue() == expectedDir && Arrays.deepEquals(solution.getGrid(), expectedGrid)) {
+        boolean checkM = expectedM == -1 || h - 1 - solution.getM() == expectedM;
+        boolean checkN = expectedN == -1 || solution.getN() == expectedN;
+        boolean checkDir = expectedDir == -1 || solution.getDirection().getValue() == expectedDir;
+        if (checkM && checkN && checkDir && Arrays.deepEquals(solution.getGrid(), expectedGrid)) {
             outputWriter.write("PASS\n");
             outputWriter.flush();
         } else {
