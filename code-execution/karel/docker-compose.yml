@@ -7,4 +7,4 @@ services:
     container_name: karel-example-container
     user: "${UID}:${GID}"
     environment:
-      - test_count=1
+      - test_count=3

@@ -39,6 +39,7 @@ public class Main {
             lines.add(lineB);
         }
         boolean[][][] borders = new boolean[w][h][4];
+        solution.setBorders(borders);
 
         for (String[] l : lines) {
             int x = Integer.parseInt(l[0]);
