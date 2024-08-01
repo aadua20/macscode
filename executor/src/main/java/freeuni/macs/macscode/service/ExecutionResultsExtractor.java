@@ -4,7 +4,6 @@ import freeuni.macs.macscode.dto.SingleTestCaseResult;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -15,6 +14,7 @@ import java.util.List;
 public class ExecutionResultsExtractor {
 
     private static final String COMPILE_ERROR = "COMPILE_ERROR";
+    private static final String RUNTIME_ERROR = "RUNTIME_ERROR";
     private static final String KAREL_CRASHED = "KAREL_CRASHED";
     private static final String NO_BEEPER = "NO_BEEPER";
 
