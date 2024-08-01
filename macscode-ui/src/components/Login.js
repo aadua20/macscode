@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
 import '../styles/Login.css';
+import '../styles/Loading.css';
 
 const Login = () => {
     const [username, setUsername] = useState('');
