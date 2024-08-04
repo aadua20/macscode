@@ -4,8 +4,11 @@ import com.freeuni.macs.model.UserSubmission;
 import com.freeuni.macs.model.api.UserSubmissionDto;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
-public class UploadProblemMapper {
+public class UserSubmissionMapper {
 
     public static UserSubmissionDto toDto(UserSubmission userSubmission) {
         if (userSubmission == null) {
@@ -35,5 +38,25 @@ public class UploadProblemMapper {
                 .submissionDate(userSubmissionDto.getSubmissionDate())
                 .result(userSubmissionDto.getResult())
                 .build();
+    }
+
+    public static List<UserSubmissionDto> toDtoList(List<UserSubmission> userSubmissions) {
+        if (userSubmissions == null || userSubmissions.isEmpty()) {
+            return List.of();
+        }
+
+        return userSubmissions.stream()
+                .map(UserSubmissionMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public static List<UserSubmission> toEntityList(List<UserSubmissionDto> userSubmissionDtos) {
+        if (userSubmissionDtos == null || userSubmissionDtos.isEmpty()) {
+            return List.of();
+        }
+
+        return userSubmissionDtos.stream()
+                .map(UserSubmissionMapper::toEntity)
+                .collect(Collectors.toList());
     }
 }
