@@ -186,3 +186,15 @@ pre {
     white-space: pre-wrap;
     word-break: break-all;
 }
+
+.methodology-label {
+    color: purple;
+}
+
+.abstractions-label {
+    color: orange;
+}
+
+.count {
+    color: inherit;
+}

@@ -126,8 +126,7 @@ public class ProblemService {
             assert submitResponses != null;
             UserSubmission submission = UserSubmission.builder()
                     .submitterUsername(getCurrentUser())
-                    .problemId(problem.getId())
-                    .problemName(problem.getName())
+                    .problem(problem)
                     .solutionFileContent(solution.getSolution())
                     .submissionDate(new Date())
                     .result(determineSubmissionResult(submitResponses))

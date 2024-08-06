@@ -53,12 +53,23 @@ const Profile = () => {
     };
 
     const countAcceptedCodes = (type) => {
-        return submissions.filter(submission => submission.result === 'ACCEPTED' && submission.type === type).length;
+        const uniqueProblemIds = new Set();
+
+        submissions.forEach(submission => {
+            if (submission.result === 'ACCEPTED' && submission.problem.problemId.course === type) {
+                uniqueProblemIds.add(submission.problem.id);
+            }
+        });
+
+        return uniqueProblemIds.size;
     };
 
     if (!userDetails) {
         return <div>Loading...</div>;
     }
+
+    const methodologyCount = countAcceptedCodes('MET');
+    const abstractionsCount = countAcceptedCodes('ABS');
 
     return (
         <div className="profile-page">
@@ -71,8 +82,16 @@ const Profile = () => {
                     </div>
                     <div className="statistics-container">
                         <h3>Statistics</h3>
-                        <p>Methodology Codes Accepted: {countAcceptedCodes('methodology')}</p>
-                        <p>Abstractions Codes Accepted: {countAcceptedCodes('abstractions')}</p>
+                        {methodologyCount > 0 && (
+                            <p className="statistics-text">
+                                <span className="methodology-label">Methodology:</span> <span className="count">{methodologyCount}</span> {methodologyCount === 1 ? 'Problem Solved' : 'Problems Solved'}
+                            </p>
+                        )}
+                        {abstractionsCount > 0 && (
+                            <p className="statistics-text">
+                                <span className="abstractions-label">Abstractions:</span> <span className="count">{abstractionsCount}</span> {abstractionsCount === 1 ? 'Problem Solved' : 'Problems Solved'}
+                            </p>
+                        )}
                     </div>
                 </div>
                 <div className="submissions-container">
@@ -83,7 +102,7 @@ const Profile = () => {
                                 className="submission-item"
                                 key={submission.id.toString()}
                             >
-                                <div className="problem-name">{submission.problemName}</div>
+                                <div className="problem-name">{submission.problem.name}</div>
                                 <div className={`result ${submission.result === 'ACCEPTED' ? 'accepted' : 'rejected'}`}>
                                     {submission.result}
                                 </div>

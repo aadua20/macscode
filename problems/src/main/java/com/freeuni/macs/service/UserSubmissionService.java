@@ -21,7 +21,7 @@ public class UserSubmissionService {
     private final UserSubmissionRepository userSubmissionRepository;
 
     @Autowired
-    public UserSubmissionService(UserSubmissionRepository userSubmissionRepository, UserSubmissionMapper userSubmissionMapper) {
+    public UserSubmissionService(UserSubmissionRepository userSubmissionRepository) {
         this.userSubmissionRepository = userSubmissionRepository;
     }
 
