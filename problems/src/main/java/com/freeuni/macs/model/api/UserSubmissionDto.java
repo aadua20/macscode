@@ -20,6 +20,8 @@ public class UserSubmissionDto {
 
     private ObjectId problemId;
 
+    private String problemName;
+
     private String solutionFileContent;
 
     private Date submissionDate;

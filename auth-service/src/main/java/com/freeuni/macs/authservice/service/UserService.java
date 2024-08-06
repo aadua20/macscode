@@ -3,6 +3,7 @@ package com.freeuni.macs.authservice.service;
 import com.freeuni.macs.authservice.exception.UserAuthException;
 import com.freeuni.macs.authservice.model.api.AuthResponse;
 import com.freeuni.macs.authservice.model.api.SignInRequest;
+import com.freeuni.macs.authservice.model.api.UserDTO;
 import com.freeuni.macs.authservice.model.db.User;
 import com.freeuni.macs.authservice.repository.UserRepository;
 import com.freeuni.macs.authservice.security.JwtService;
@@ -63,5 +64,10 @@ public class UserService {
         return AuthResponse.builder()
                 .token(jwt)
                 .build();
+    }
+
+    public User getUser(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        return user.orElse(null);
     }
 }

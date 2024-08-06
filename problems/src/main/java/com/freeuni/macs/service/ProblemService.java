@@ -127,6 +127,7 @@ public class ProblemService {
             UserSubmission submission = UserSubmission.builder()
                     .submitterUsername(getCurrentUser())
                     .problemId(problem.getId())
+                    .problemName(problem.getName())
                     .solutionFileContent(solution.getSolution())
                     .submissionDate(new Date())
                     .result(determineSubmissionResult(submitResponses))

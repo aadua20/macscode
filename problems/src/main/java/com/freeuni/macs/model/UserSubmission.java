@@ -23,6 +23,9 @@ public class UserSubmission {
     @Field(name = "problem_id")
     private ObjectId problemId;
 
+    @Field(name = "problem_name")
+    private String problemName;
+
     @Field(name = "solution_file_content")
     private String solutionFileContent;
 
