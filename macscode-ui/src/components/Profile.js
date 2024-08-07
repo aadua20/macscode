@@ -1,18 +1,22 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import {AuthContext} from '../AuthContext';
-import {jwtDecode} from 'jwt-decode';
-import {useNavigate} from 'react-router-dom';
+import { AuthContext } from '../AuthContext';
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import '../styles/Profile.css';
 import homeIcon from '../icons/logo192.png';
 import '../styles/Loading.css';
 
 const Profile = () => {
-    const {auth} = useContext(AuthContext);
+    const { auth } = useContext(AuthContext);
     const [userDetails, setUserDetails] = useState(null);
     const [submissions, setSubmissions] = useState([]);
+    const [topicsCount, setTopicsCount] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedCode, setSelectedCode] = useState(null);
+    const [selectedLanguage, setSelectedLanguage] = useState('java');
     const [showCode, setShowCode] = useState(false);
     const navigate = useNavigate();
     const submissionsPerPage = 10;
@@ -36,6 +40,7 @@ const Profile = () => {
                     }
                 });
                 setSubmissions(submissionsResponse.data);
+                calculateTopicsCount(submissionsResponse.data);
             } catch (error) {
                 console.error('Error fetching data', error);
             }
@@ -46,9 +51,30 @@ const Profile = () => {
         }
     }, [auth]);
 
-    const handleCodeClick = async (solutionFileContent) => {
+    const calculateTopicsCount = (submissions) => {
+        const topicCounts = {};
+        const uniqueProblemIds = new Set();
+
+        submissions.forEach(submission => {
+            if (submission.result === 'ACCEPTED') {
+                if (!uniqueProblemIds.has(submission.problem.id)) {
+                    uniqueProblemIds.add(submission.problem.id);
+                    const topics = new Set(submission.problem.topics);
+
+                    topics.forEach(topic => {
+                        topicCounts[topic] = (topicCounts[topic] || 0) + 1;
+                    });
+                }
+            }
+        });
+
+        setTopicsCount(topicCounts);
+    };
+
+    const handleCodeClick = async (solutionFileContent, language) => {
         try {
             setSelectedCode(solutionFileContent);
+            setSelectedLanguage(language);
             setShowCode(true);
         } catch (error) {
             console.error('Error fetching code', error);
@@ -80,6 +106,24 @@ const Profile = () => {
     const currentSubmissions = submissions.slice(indexOfFirstSubmission, indexOfLastSubmission);
     const totalPages = Math.ceil(submissions.length / submissionsPerPage);
 
+    const handleClickOutside = (event) => {
+        if (event.target.classList.contains('code-popup')) {
+            setShowCode(false);
+        }
+    };
+
+    useEffect(() => {
+        if (showCode) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showCode]);
+
     if (!userDetails) {
         return <div className="loading-container">
             <div className="spinner"></div>
@@ -90,7 +134,6 @@ const Profile = () => {
     const methodologyCount = countAcceptedCodes('MET');
     const abstractionsCount = countAcceptedCodes('ABS');
 
-    console.log(submissions)
     return (
         <div className="profile-page">
             <div className="profile-container">
@@ -114,6 +157,14 @@ const Profile = () => {
                                 className="count">{abstractionsCount}</span> {abstractionsCount === 1 ? 'Problem Solved' : 'Problems Solved'}
                             </p>
                         )}
+                        <h4>Topics</h4>
+                        <div className="topics-container">
+                            {Object.keys(topicsCount).map((topic) => (
+                                <span key={topic} className="topic-box">
+                                    {topic}: x{topicsCount[topic]}
+                                </span>
+                            ))}
+                        </div>
                     </div>
                 </div>
                 <div className="submissions-container">
@@ -142,7 +193,7 @@ const Profile = () => {
                                 </div>
                                 <button
                                     className="view-code-button"
-                                    onClick={() => handleCodeClick(submission.solutionFileContent)}
+                                    onClick={() => handleCodeClick(submission.solutionFileContent, "java")}
                                 >
                                     View Code
                                 </button>
@@ -150,7 +201,7 @@ const Profile = () => {
                         ))}
                     </div>
                     <div className="pagination">
-                        {Array.from({length: totalPages}, (_, index) => (
+                        {Array.from({ length: totalPages }, (_, index) => (
                             <button
                                 key={index + 1}
                                 className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}
@@ -171,8 +222,9 @@ const Profile = () => {
             {showCode && (
                 <div className="code-popup">
                     <div className="code-popup-content">
-                        <button className="close-popup" onClick={() => setShowCode(false)}>X</button>
-                        <pre>{selectedCode}</pre>
+                        <SyntaxHighlighter language={selectedLanguage} style={dracula}>
+                            {selectedCode}
+                        </SyntaxHighlighter>
                     </div>
                 </div>
             )}
