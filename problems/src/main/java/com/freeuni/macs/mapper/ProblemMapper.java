@@ -1,25 +1,12 @@
 package com.freeuni.macs.mapper;
 
 import com.freeuni.macs.model.Problem;
-import com.freeuni.macs.model.Test;
 import com.freeuni.macs.model.api.ProblemDto;
-import com.freeuni.macs.model.api.TestDto;
-import com.freeuni.macs.service.TestService;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ProblemMapper {
-
-    private final TestService testService;
-
-    @Autowired
-    public ProblemMapper(TestService testService) {
-        this.testService = testService;
-    }
 
     public static ProblemDto toDto(Problem problem) {
         ProblemDto problemDto = new ProblemDto();

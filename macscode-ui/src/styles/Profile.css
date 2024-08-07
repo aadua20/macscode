@@ -10,13 +10,6 @@ body {
     padding: 20px;
 }
 
-.profile-container {
-    display: flex;
-    width: 100%;
-    max-width: 1200px;
-    gap: 20px;
-}
-
 .profile-info-container {
     width: 300px;
     flex-shrink: 0;
@@ -32,13 +25,18 @@ body {
     padding: 20px;
 }
 
+.profile-container {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    gap: 20px;
+}
+
 .submissions-container {
     flex-grow: 1;
     background-color: #292929;
     padding: 20px;
     border-radius: 10px;
-    overflow-y: auto;
-    max-height: calc(100vh - 40px);
 }
 
 .profile-header img {
@@ -197,4 +195,46 @@ pre {
 
 .count {
     color: inherit;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination-button {
+    background-color: #444;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    margin: 0 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.pagination-button.active {
+    background-color: #888;
+}
+
+.pagination-button:hover {
+    background-color: #666;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #444;
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
 }

@@ -5,6 +5,7 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import PrivateRoute from './components/routes/PrivateRoute';
 import Profile from "./components/Profile";
+import NotFound from "./components/NotFound";
 
 const AppRoutes = () => {
     return (
@@ -25,6 +26,8 @@ const AppRoutes = () => {
                 </PrivateRoute>
             }
             />
+
+            <Route path="*" element={<NotFound />} />
         </Routes>
     );
 };
