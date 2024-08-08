@@ -1,16 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import axios from 'axios';
-import { AuthContext } from '../AuthContext';
-import { jwtDecode } from 'jwt-decode';
-import { useNavigate } from 'react-router-dom';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import {AuthContext} from '../AuthContext';
+import {jwtDecode} from 'jwt-decode';
+import {useNavigate} from 'react-router-dom';
+import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
+import {dracula} from 'react-syntax-highlighter/dist/esm/styles/prism';
 import '../styles/Profile.css';
 import homeIcon from '../icons/logo192.png';
 import '../styles/Loading.css';
 
 const Profile = () => {
-    const { auth } = useContext(AuthContext);
+    const {auth} = useContext(AuthContext);
     const [userDetails, setUserDetails] = useState(null);
     const [submissions, setSubmissions] = useState([]);
     const [topicsCount, setTopicsCount] = useState({});
@@ -18,6 +18,9 @@ const Profile = () => {
     const [selectedCode, setSelectedCode] = useState(null);
     const [selectedLanguage, setSelectedLanguage] = useState('java');
     const [showCode, setShowCode] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [updatedName, setUpdatedName] = useState('');
+    const [updatedEmail, setUpdatedEmail] = useState('');
     const navigate = useNavigate();
     const submissionsPerPage = 10;
 
@@ -33,6 +36,8 @@ const Profile = () => {
                     }
                 });
                 setUserDetails(userResponse.data);
+                setUpdatedName(userResponse.data.name);
+                setUpdatedEmail(userResponse.data.email);
 
                 const submissionsResponse = await axios.get(`http://localhost:8080/submissions/users/${username}`, {
                     headers: {
@@ -101,6 +106,35 @@ const Profile = () => {
         setCurrentPage(pageNumber);
     };
 
+    const handleEditClick = () => {
+        setIsEditing(true);
+    };
+
+    const handleSaveClick = async () => {
+        try {
+            const decodedToken = jwtDecode(auth);
+            const username = decodedToken.sub;
+
+            await axios.put(`http://localhost:8081/auth/users/update/${username}`, {
+                name: updatedName,
+                email: updatedEmail,
+            }, {
+                headers: {
+                    Authorization: `Bearer ${auth}`
+                }
+            });
+
+            setUserDetails((prevState) => ({
+                ...prevState,
+                name: updatedName,
+                email: updatedEmail,
+            }));
+            setIsEditing(false);
+        } catch (error) {
+            console.error('Error updating profile', error);
+        }
+    };
+
     const indexOfLastSubmission = currentPage * submissionsPerPage;
     const indexOfFirstSubmission = indexOfLastSubmission - submissionsPerPage;
     const currentSubmissions = submissions.slice(indexOfFirstSubmission, indexOfLastSubmission);
@@ -139,9 +173,30 @@ const Profile = () => {
             <div className="profile-container">
                 <div className="profile-info-container">
                     <div className="profile-header">
-                        <h2>{userDetails.username}</h2>
-                        <p>Name: {userDetails.name}</p>
-                        <p>Email: {userDetails.email}</p>
+                        {isEditing ? (
+                            <div className="edit-profile-container">
+                                <input
+                                    type="text"
+                                    value={updatedName}
+                                    onChange={(e) => setUpdatedName(e.target.value)}
+                                    placeholder="Name"
+                                />
+                                <input
+                                    type="email"
+                                    value={updatedEmail}
+                                    onChange={(e) => setUpdatedEmail(e.target.value)}
+                                    placeholder="Email"
+                                />
+                                <button onClick={handleSaveClick}>Save</button>
+                            </div>
+                        ) : (
+                            <div className="profile-header-info">
+                                <h2>{userDetails.username}</h2>
+                                <p>Name: {userDetails.name}</p>
+                                <p>Email: {userDetails.email}</p>
+                                <button onClick={handleEditClick}>Edit Profile</button>
+                            </div>
+                        )}
                     </div>
                     <div className="statistics-container">
                         <h3>Statistics</h3>
@@ -178,7 +233,7 @@ const Profile = () => {
                                 <div
                                     className="problem-name"
                                     onClick={() => handleProblemClick(submission.problem.name.replace(/ /g, '-'))}
-                                    style={{ cursor: 'pointer', color: '#ffb700' }}
+                                    style={{cursor: 'pointer', color: '#ffb700'}}
                                 >
                                     {submission.problem.name}
                                 </div>
@@ -201,7 +256,7 @@ const Profile = () => {
                         ))}
                     </div>
                     <div className="pagination">
-                        {Array.from({ length: totalPages }, (_, index) => (
+                        {Array.from({length: totalPages}, (_, index) => (
                             <button
                                 key={index + 1}
                                 className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}

@@ -45,4 +45,12 @@ public class UserController {
     ) {
         return userMapper.entityToDTO(userService.getUser(username));
     }
+
+    @PutMapping("/users/update/{username}")
+    public ResponseEntity<?> updateUser(
+            @PathVariable String username,
+            @RequestBody UserDTO userDto) {
+        userService.updateUser(username, userDto);
+        return ResponseEntity.ok("User updated successfully.");
+    }
 }

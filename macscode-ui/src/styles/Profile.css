@@ -10,6 +10,13 @@ body {
     padding: 20px;
 }
 
+.profile-container {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    gap: 20px;
+}
+
 .profile-info-container {
     width: 300px;
     flex-shrink: 0;
@@ -23,21 +30,6 @@ body {
     border-radius: 10px;
     color: #e0e0e0;
     padding: 20px;
-}
-
-.profile-container {
-    display: flex;
-    width: 100%;
-    max-width: 1200px;
-    gap: 20px;
-}
-
-.submissions-container {
-    min-height: 100px;
-    flex-grow: 1;
-    background-color: #292929;
-    padding: 20px;
-    border-radius: 10px;
 }
 
 .profile-header img {
@@ -56,6 +48,14 @@ body {
 .profile-header p {
     margin: 5px 0;
     color: #b0b0b0;
+}
+
+.submissions-container {
+    min-height: 100px;
+    flex-grow: 1;
+    background-color: #292929;
+    padding: 20px;
+    border-radius: 10px;
 }
 
 .submissions-container h3 {
@@ -263,4 +263,39 @@ pre {
 .topic-box:hover {
     background-color: #4a4a4a;
     color: #ffffff;
+}
+
+.edit-profile-container, .save-button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.profile-header input {
+    background-color: #444;
+    border: 1px solid #666;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    outline: none;
+    font-size: 14px;
+}
+
+.profile-header input::placeholder {
+    color: #888;
+}
+
+.profile-header button {
+    background-color: orange;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.profile-header button:hover {
+    background-color: #cbb111;
 }
