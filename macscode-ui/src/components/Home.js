@@ -7,7 +7,7 @@ const Home = () => {
     const [problems, setProblems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [sortOrder, setSortOrder] = useState('none'); // 'asc', 'desc', 'none'
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'none' });
 
     useEffect(() => {
         const fetchProblems = async () => {
@@ -17,8 +17,8 @@ const Home = () => {
                     throw new Error('Network response was not ok');
                 }
                 let data = await response.json();
-                if (sortOrder !== 'none') {
-                    data = sortProblems(data, sortOrder);
+                if (sortConfig.key) {
+                    data = sortProblems(data, sortConfig);
                 }
                 setProblems(data);
                 setIsLoading(false);
@@ -29,22 +29,50 @@ const Home = () => {
         };
 
         fetchProblems();
-    }, [sortOrder]);
+    }, [sortConfig]);
 
-    const sortProblems = (problems, order) => {
-        const difficultyOrder = { 'easy': 1, 'medium': 2, 'hard': 3 };
-        return problems.sort((a, b) => {
-            if (order === 'asc') {
-                return difficultyOrder[a.difficulty.toLowerCase()] - difficultyOrder[b.difficulty.toLowerCase()];
-            } else if (order === 'desc') {
-                return difficultyOrder[b.difficulty.toLowerCase()] - difficultyOrder[a.difficulty.toLowerCase()];
+    const requestSort = (key) => {
+        let direction = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        } else if (sortConfig.key === key && sortConfig.direction === 'desc') {
+            direction = 'none';  // Optional: Add a 'none' state to reset the sort order
+        }
+        setSortConfig({ key, direction });
+    };
+
+    const difficultyOrder = { 'easy': 1, 'medium': 2, 'hard': 3 };
+
+    const sortProblems = (problems, { key, direction }) => {
+        if (!key || direction === 'none') return problems;
+
+        const sortedProblems = [...problems].sort((a, b) => {
+            if (key === 'title') {
+                const orderA = a.problemId.order;
+                const orderB = b.problemId.order;
+                if (direction === 'asc') {
+                    return orderA - orderB;
+                } else {
+                    return orderB - orderA;
+                }
+            } else if (key === 'difficulty') {
+                // Custom sorting for difficulty based on predefined order
+                const rankA = difficultyOrder[a.difficulty.toLowerCase()];
+                const rankB = difficultyOrder[b.difficulty.toLowerCase()];
+                return direction === 'asc' ? rankA - rankB : rankB - rankA;
+            } else {
+                // Default alphabetical sorting for other keys
+                const itemA = a[key].toLowerCase();
+                const itemB = b[key].toLowerCase();
+                if (itemA < itemB) return direction === 'asc' ? -1 : 1;
+                if (itemA > itemB) return direction === 'asc' ? 1 : -1;
+                return 0;
             }
         });
+
+        return sortedProblems;
     };
 
-    const handleSort = (order) => {
-        setSortOrder(order);
-    };
 
     const getDifficultyClass = (difficulty) => {
         switch (difficulty.toLowerCase()) {
@@ -67,13 +95,10 @@ const Home = () => {
                 <p>Error loading problems: {error}</p>
             ) : (
                 <div>
-                    <h2>Problems</h2>
-                    <button onClick={() => handleSort('asc')}>Sort Asc</button>
-                    <button onClick={() => handleSort('desc')}>Sort Desc</button>
                     <div className="table-header">
-                        <span className="header-item">Title</span>
-                        <span className="header-item">Type</span>
-                        <span className="header-item">Difficulty</span>
+                        <span className="header-item" onClick={() => requestSort('title')}>Title {sortConfig.key === 'title' && sortConfig.direction !== 'none' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}</span>
+                        <span className="header-item" onClick={() => requestSort('type')}>Type {sortConfig.key === 'type' && sortConfig.direction !== 'none' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}</span>
+                        <span className="header-item" onClick={() => requestSort('difficulty')}>Difficulty {sortConfig.key === 'difficulty' && sortConfig.direction !== 'none' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}</span>
                         <span className="header-item">Topics</span>
                     </div>
                     <ul className="problem-list">

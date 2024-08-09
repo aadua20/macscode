@@ -7,6 +7,14 @@
     max-width: 960px;
 }
 
+.header-item {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
 .table-header {
     display: grid;
     grid-template-columns: 2.5fr 1fr 1fr 1fr;
