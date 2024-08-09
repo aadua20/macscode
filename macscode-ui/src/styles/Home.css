@@ -1,0 +1,49 @@
+.container {
+    font-family: 'Arial', sans-serif;
+    padding: 10px;
+    background-color: #252525;
+    color: #ffffff;
+    margin: 0 auto;
+    max-width: 960px;
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr 1fr 1fr;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 10px 10px;
+    border-bottom: 2px solid #6c757d;
+    margin-bottom: 10px;
+    color: #adb5bd;
+}
+
+.problem-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.problem-item {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr 1fr 1fr;
+    align-items: center;
+    border-bottom: 1px solid #6c757d;
+    padding: 15px 10px;
+    transition: background-color 0.3s;
+}
+
+.problem-item:nth-child(odd) {
+    background-color: #2d2f34;
+}
+
+.problem-item:hover {
+    background-color: #495057;
+}
+
+.problem-name, .problem-type, .problem-difficulty, .problem-topics {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: 0 10px;
+}
