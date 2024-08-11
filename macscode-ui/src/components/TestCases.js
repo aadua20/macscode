@@ -1,34 +1,26 @@
 import React, { useState } from 'react';
-import '../styles/TestCases.css'; // Optional: Add custom styles
+import '../styles/TestCases.css';
 
 const TestCases = ({ testCases }) => {
-    const [activeTab, setActiveTab] = useState(testCases.length > 0 ? testCases[0].testNum : null);
-
-    const handleTabChange = (testNum) => {
-        setActiveTab(testNum);
-    };
-
-    const activeTestCase = testCases.find(testCase => testCase.testNum === activeTab);
+    const [activeTab, setActiveTab] = useState(0);
 
     return (
         <div className="test-cases">
-            <h4>Test Cases</h4>
-            <div className="test-cases-tabs">
-                {testCases.map(testCase => (
+            <div className="tabs">
+                {testCases.map((testCase, index) => (
                     <button
-                        key={testCase.testNum}
-                        className={`tab-button ${activeTab === testCase.testNum ? 'active' : ''}`}
-                        onClick={() => handleTabChange(testCase.testNum)}
+                        key={index}
+                        className={`tab-button ${index === activeTab ? 'active' : ''}`}
+                        onClick={() => setActiveTab(index)}
                     >
-                        Test Case {testCase.testNum}
+                        Test Case {index + 1}
                     </button>
                 ))}
             </div>
-            {activeTestCase && (
-                <div className="test-case-content">
-                    <pre>{activeTestCase.input}</pre>
-                </div>
-            )}
+            <div className="test-case-content">
+                <h4>Test Case {activeTab + 1}</h4>
+                <pre>{testCases[activeTab].input}</pre>
+            </div>
         </div>
     );
 };

@@ -30,10 +30,19 @@
     padding: 20px;
     box-sizing: border-box;
     border-top: 1px solid #ccc; /* Optional: Add a border between sections */
+    display: flex;
+    flex-direction: column;
 }
 
+.button-container {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.run-button,
 .submit-button {
-    margin-top: 20px;
+    margin-right: 10px; /* Space between buttons */
     padding: 10px 20px;
     background-color: #007bff;
     color: #fff;
@@ -42,8 +51,24 @@
     cursor: pointer;
 }
 
+.run-button:hover,
 .submit-button:hover {
     background-color: #0056b3;
+}
+
+.view-results-button {
+    margin-left: auto; /* Push to the far right */
+    padding: 10px 20px;
+    background-color: #28a745; /* Green */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: none; /* Hide by default */
+}
+
+.view-results-button.show {
+    display: block; /* Show button when needed */
 }
 
 .error-message {
@@ -87,3 +112,15 @@
     height: calc(100% - 50px); /* Adjust height if needed */
 }
 
+.test-case-result {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #e8f5e9; /* Light green background for results */
+    border: 1px solid #4caf50; /* Green border */
+    border-radius: 4px;
+}
+
+.test-case-result.fail {
+    background-color: #f8d7da; /* Light red background for failed tests */
+    border-color: #f5c6cb; /* Red border */
+}
