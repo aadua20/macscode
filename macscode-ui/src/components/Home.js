@@ -14,7 +14,7 @@ const Home = () => {
     const [searchTerm, setSearchTerm] = useState('');  // New state for search term
     const [topics, setTopics] = useState([]); // Array to store topics from the database
     const [selectedTopics, setSelectedTopics] = useState([]); // Use an array, not a Set
-    const [selectedTopic, setSelectedTopic] = useState('');
+    const [selectedCategories, setSelectedCategories] = useState([]);
     const [topicCounts, setTopicCounts] = useState(''); // Use an array, not a Set
 
 
@@ -131,8 +131,14 @@ const Home = () => {
         setSelectedTopics(selectedOptions ? selectedOptions.map(option => option.value) : []);
     };
 
-    const handleTopicClick = (topic) => {
-        setSelectedTopic(prevTopic => prevTopic === topic ? '' : topic); // Toggle topic selection
+    const handleCategoriesClick = (topic) => {
+        setSelectedCategories(prevTopics => {
+            if (prevTopics.includes(topic)) {
+                return prevTopics.filter(t => t !== topic);  // Remove topic if it's already selected
+            } else {
+                return [...prevTopics, topic];  // Add topic if it's not already selected
+            }
+        });
     };
 
 
@@ -144,7 +150,7 @@ const Home = () => {
         (selectedType === 'all' || problem.type.toLowerCase() === selectedType) &&
         (selectedDifficulty === 'all' || problem.difficulty.toLowerCase() === selectedDifficulty) &&
         (selectedTopics.length === 0 || selectedTopics.every(topic => problem.topics.includes(topic))) &&
-        (selectedTopic === '' || problem.topics.includes(selectedTopic)) && // Filter by selected topic
+        (selectedCategories.length === 0 ||selectedCategories.some(topic => problem.topics.includes(topic))) && // Filter by selected topic
         problem.name.toLowerCase().includes(searchTerm)
     );
 
@@ -172,8 +178,8 @@ const Home = () => {
                         <div className="topics-grid">
                             {Object.entries(topicCounts).map(([topic, count]) => (
                                 <div key={topic}
-                                     className={`topic-item ${selectedTopic === topic ? 'selected' : ''}`}
-                                     onClick={() => handleTopicClick(topic)}>
+                                     className={`topic-item ${selectedCategories.includes(topic) ? 'selected' : ''}`}
+                                     onClick={() => handleCategoriesClick(topic)}>
                                     {topic} ({count})
                                 </div>
                             ))}
