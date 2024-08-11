@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../AuthContext';
+import Select from 'react-select'; // If using react-select
 import '../styles/Home.css';
 
 const Home = () => {
@@ -9,6 +10,11 @@ const Home = () => {
     const [error, setError] = useState(null);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'none' });
     const [selectedType, setSelectedType] = useState('all');  // 'java', 'cpp', 'karel', or 'all'
+    const [selectedDifficulty, setSelectedDifficulty] = useState('all');  // New state for difficulty
+    const [searchTerm, setSearchTerm] = useState('');  // New state for search term
+    const [topics, setTopics] = useState([]); // Array to store topics from the database
+    const [selectedTopics, setSelectedTopics] = useState(new Set()); // Set to store selected topics for filtering
+
 
     useEffect(() => {
         const fetchProblems = async () => {
@@ -22,6 +28,12 @@ const Home = () => {
                     data = sortProblems(data, sortConfig);
                 }
                 setProblems(data);
+                const allTopics = new Set();
+
+                data.forEach(problem => {
+                    problem.topics.forEach(topic => allTopics.add(topic));
+                });
+                setTopics(Array.from(allTopics));
                 setIsLoading(false);
             } catch (err) {
                 setError(err.message);
@@ -57,12 +69,10 @@ const Home = () => {
                     return orderB - orderA;
                 }
             } else if (key === 'difficulty') {
-                // Custom sorting for difficulty based on predefined order
                 const rankA = difficultyOrder[a.difficulty.toLowerCase()];
                 const rankB = difficultyOrder[b.difficulty.toLowerCase()];
                 return direction === 'asc' ? rankA - rankB : rankB - rankA;
             } else {
-                // Default alphabetical sorting for other keys
                 const itemA = a[key].toLowerCase();
                 const itemB = b[key].toLowerCase();
                 if (itemA < itemB) return direction === 'asc' ? -1 : 1;
@@ -78,6 +88,17 @@ const Home = () => {
         setSelectedType(prevType => prevType === type ? 'all' : type);
     };
 
+    const difficultyOptions = [
+        { value: 'all', label: 'All Difficulties' },
+        { value: 'easy', label: 'Easy' },
+        { value: 'medium', label: 'Medium' },
+        { value: 'hard', label: 'Hard' }
+    ];
+
+    const handleDifficultyChange = selectedOption => {
+        setSelectedDifficulty(selectedOption.value);
+    };
+
     const getDifficultyClass = (difficulty) => {
         switch (difficulty.toLowerCase()) {
             case 'easy':
@@ -90,6 +111,23 @@ const Home = () => {
                 return '';
         }
     };
+
+    const topicOptions = topics.map(topic => ({ value: topic, label: topic }));
+
+    const handleTopicChange = (selectedOptions) => {
+        setSelectedTopics(selectedOptions ? selectedOptions.map(option => option.value) : []);
+    };
+
+
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value.toLowerCase());
+    };
+
+    const filteredProblems = problems
+        .filter(problem => selectedType === 'all' || problem.type.toLowerCase() === selectedType)
+        .filter(problem => selectedDifficulty === 'all' || problem.difficulty.toLowerCase() === selectedDifficulty)
+        .filter(problem => selectedTopics.size === 0 || problem.topics.some(topic => selectedTopics.includes(topic)))
+        .filter(problem => problem.name.toLowerCase().includes(searchTerm));
 
     return (
         <div className="container">
@@ -110,8 +148,26 @@ const Home = () => {
                             KAREL
                         </button>
                     </div>
-
-
+                    <div className="filters">
+                        <Select
+                            isMulti
+                            name="topics"
+                            options={topicOptions}
+                            className="basic-multi-select"
+                            classNamePrefix="select"
+                            onChange={handleTopicChange}
+                            placeholder="Filter by topics..."
+                        />
+                        <Select
+                            value={difficultyOptions.find(option => option.value === selectedDifficulty)}
+                            onChange={handleDifficultyChange}
+                            options={difficultyOptions}
+                            className="basic-multi-select"
+                            classNamePrefix="select"
+                            isSearchable={true}
+                        />
+                        <input type="text" placeholder="Search by title..." value={searchTerm} onChange={handleSearchChange} />
+                    </div>
                     <div className="table-header">
                         <span className="header-item" onClick={() => requestSort('title')}>Title {sortConfig.key === 'title' && sortConfig.direction !== 'none' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}</span>
                         <span className="header-item" onClick={() => requestSort('type')}>Type {sortConfig.key === 'type' && sortConfig.direction !== 'none' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}</span>
@@ -119,7 +175,7 @@ const Home = () => {
                         <span className="header-item">Topics</span>
                     </div>
                     <ul className="problem-list">
-                        {problems.filter(problem => selectedType === 'all' || problem.type.toLowerCase() === selectedType).map((problem) => (
+                        {filteredProblems.map((problem) => (
                             <li key={problem.id} className="problem-item">
                                 <span className="column title">{problem.problemId.order}. {problem.name}</span>
                                 <span className="column type">{problem.type}</span>
