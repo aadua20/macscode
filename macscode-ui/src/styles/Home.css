@@ -72,3 +72,57 @@
 .difficulty.hard {
     color: #F44336;
 }
+
+.type-banners {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+
+.banner {
+    flex: 1 0 220px;
+    max-width: 220px;
+    height: 100px;
+    margin: 5px;
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.banner:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.banner.active {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(255, 255, 255, 0.75);
+}
+
+
+.banner.java {
+    background-image: url('../images/java.png');
+}
+
+.banner.cpp {
+    background-image: url('../images/cpp.png');
+}
+
+.banner.karel {
+    background-image: url('../images/cpp.png');
+}
+

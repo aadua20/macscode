@@ -8,6 +8,7 @@ const Home = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'none' });
+    const [selectedType, setSelectedType] = useState('all');  // 'java', 'cpp', 'karel', or 'all'
 
     useEffect(() => {
         const fetchProblems = async () => {
@@ -73,6 +74,9 @@ const Home = () => {
         return sortedProblems;
     };
 
+    const handleBannerClick = (type) => {
+        setSelectedType(prevType => prevType === type ? 'all' : type);
+    };
 
     const getDifficultyClass = (difficulty) => {
         switch (difficulty.toLowerCase()) {
@@ -95,6 +99,19 @@ const Home = () => {
                 <p>Error loading problems: {error}</p>
             ) : (
                 <div>
+                    <div className="type-banners">
+                        <button className={`banner java ${selectedType === 'java' ? 'active' : ''}`} onClick={() => handleBannerClick('java')}>
+                            JAVA
+                        </button>
+                        <button className={`banner cpp ${selectedType === 'cpp' ? 'active' : ''}`} onClick={() => handleBannerClick('cpp')}>
+                            C++
+                        </button>
+                        <button className={`banner karel ${selectedType === 'karel' ? 'active' : ''}`} onClick={() => handleBannerClick('karel')}>
+                            KAREL
+                        </button>
+                    </div>
+
+
                     <div className="table-header">
                         <span className="header-item" onClick={() => requestSort('title')}>Title {sortConfig.key === 'title' && sortConfig.direction !== 'none' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}</span>
                         <span className="header-item" onClick={() => requestSort('type')}>Type {sortConfig.key === 'type' && sortConfig.direction !== 'none' ? (sortConfig.direction === 'asc' ? '▲' : '▼') : ''}</span>
@@ -102,7 +119,7 @@ const Home = () => {
                         <span className="header-item">Topics</span>
                     </div>
                     <ul className="problem-list">
-                        {problems.map((problem) => (
+                        {problems.filter(problem => selectedType === 'all' || problem.type.toLowerCase() === selectedType).map((problem) => (
                             <li key={problem.id} className="problem-item">
                                 <span className="column title">{problem.problemId.order}. {problem.name}</span>
                                 <span className="column type">{problem.type}</span>
