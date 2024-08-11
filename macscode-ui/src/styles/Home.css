@@ -126,3 +126,34 @@
     background-image: url('../images/cpp.png');
 }
 
+.topics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Adjust column width as necessary */
+    gap: 15px; /* Spacing between grid items */
+    padding: 20px; /* Padding around the entire grid */
+    background-color: #f0f0f0; /* Light grey background for the grid */
+}
+
+.topic-item {
+    background-color: #887b7b; /* White background for each topic */
+    border: 1px solid #cccccc; /* Light grey border */
+    padding: 10px 15px; /* Padding inside each topic */
+    text-align: center; /* Center text */
+    font-weight: bold; /* Make the font bold */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for 3D effect */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: transform 0.2s, box-shadow 0.2s; /* Smooth transition for hover effects */
+}
+
+.topic-item:hover {
+    transform: translateY(-3px); /* Slightly raise the item on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Enhance shadow on hover */
+}
+
+.topic-item.selected {
+    background-color: #007bff; /* Blue background for selected topics */
+    color: #ffffff; /* White text for contrast */
+    border-color: #0056b3; /* Darker blue border for selected topics */
+}
+
+

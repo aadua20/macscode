@@ -14,6 +14,8 @@ const Home = () => {
     const [searchTerm, setSearchTerm] = useState('');  // New state for search term
     const [topics, setTopics] = useState([]); // Array to store topics from the database
     const [selectedTopics, setSelectedTopics] = useState([]); // Use an array, not a Set
+    const [selectedTopic, setSelectedTopic] = useState('');
+    const [topicCounts, setTopicCounts] = useState(''); // Use an array, not a Set
 
 
     useEffect(() => {
@@ -34,6 +36,7 @@ const Home = () => {
                     problem.topics.forEach(topic => allTopics.add(topic));
                 });
                 setTopics(Array.from(allTopics));
+                setTopicCounts(computeTopicCounts(data));
                 setIsLoading(false);
             } catch (err) {
                 setError(err.message);
@@ -52,6 +55,16 @@ const Home = () => {
             direction = 'none';  // Optional: Add a 'none' state to reset the sort order
         }
         setSortConfig({ key, direction });
+    };
+
+    const computeTopicCounts = (problems) => {
+        const counts = {};
+        problems.forEach(problem => {
+            problem.topics.forEach(topic => {
+                counts[topic] = (counts[topic] || 0) + 1;
+            });
+        });
+        return counts;
     };
 
     const difficultyOrder = { 'easy': 1, 'medium': 2, 'hard': 3 };
@@ -118,6 +131,10 @@ const Home = () => {
         setSelectedTopics(selectedOptions ? selectedOptions.map(option => option.value) : []);
     };
 
+    const handleTopicClick = (topic) => {
+        setSelectedTopic(prevTopic => prevTopic === topic ? '' : topic); // Toggle topic selection
+    };
+
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value.toLowerCase());
@@ -127,6 +144,7 @@ const Home = () => {
         (selectedType === 'all' || problem.type.toLowerCase() === selectedType) &&
         (selectedDifficulty === 'all' || problem.difficulty.toLowerCase() === selectedDifficulty) &&
         (selectedTopics.length === 0 || selectedTopics.every(topic => problem.topics.includes(topic))) &&
+        (selectedTopic === '' || problem.topics.includes(selectedTopic)) && // Filter by selected topic
         problem.name.toLowerCase().includes(searchTerm)
     );
 
@@ -151,6 +169,15 @@ const Home = () => {
                         </button>
                     </div>
                     <div className="filters">
+                        <div className="topics-grid">
+                            {Object.entries(topicCounts).map(([topic, count]) => (
+                                <div key={topic}
+                                     className={`topic-item ${selectedTopic === topic ? 'selected' : ''}`}
+                                     onClick={() => handleTopicClick(topic)}>
+                                    {topic} ({count})
+                                </div>
+                            ))}
+                        </div>
                         <Select
                             isMulti
                             name="topics"
