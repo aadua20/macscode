@@ -13,7 +13,7 @@ const Home = () => {
     const [selectedDifficulty, setSelectedDifficulty] = useState('all');  // New state for difficulty
     const [searchTerm, setSearchTerm] = useState('');  // New state for search term
     const [topics, setTopics] = useState([]); // Array to store topics from the database
-    const [selectedTopics, setSelectedTopics] = useState(new Set()); // Set to store selected topics for filtering
+    const [selectedTopics, setSelectedTopics] = useState([]); // Use an array, not a Set
 
 
     useEffect(() => {
@@ -123,11 +123,13 @@ const Home = () => {
         setSearchTerm(event.target.value.toLowerCase());
     };
 
-    const filteredProblems = problems
-        .filter(problem => selectedType === 'all' || problem.type.toLowerCase() === selectedType)
-        .filter(problem => selectedDifficulty === 'all' || problem.difficulty.toLowerCase() === selectedDifficulty)
-        .filter(problem => selectedTopics.size === 0 || problem.topics.some(topic => selectedTopics.includes(topic)))
-        .filter(problem => problem.name.toLowerCase().includes(searchTerm));
+    const filteredProblems = problems.filter(problem =>
+        (selectedType === 'all' || problem.type.toLowerCase() === selectedType) &&
+        (selectedDifficulty === 'all' || problem.difficulty.toLowerCase() === selectedDifficulty) &&
+        (selectedTopics.length === 0 || selectedTopics.every(topic => problem.topics.includes(topic))) &&
+        problem.name.toLowerCase().includes(searchTerm)
+    );
+
 
     return (
         <div className="container">
@@ -157,6 +159,7 @@ const Home = () => {
                             classNamePrefix="select"
                             onChange={handleTopicChange}
                             placeholder="Filter by topics..."
+                            isSearchable={true}
                         />
                         <Select
                             value={difficultyOptions.find(option => option.value === selectedDifficulty)}
