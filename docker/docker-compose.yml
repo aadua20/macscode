@@ -12,12 +12,12 @@ services:
     build:
       context: ../macscode
     ports:
-      - "8080:8080"
+      - "8092:8092"
   problems-db:
     container_name: problems-db
     image: mongo:latest
     ports:
-      - 9100:27017
+      - "9100:27017"
     volumes:
       - ./problemsdb:/data/db
 
@@ -35,6 +35,9 @@ services:
       - macscode_network
     env_file:
       - .env
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - LOGSTASH_SERVERS=logstash:5000
 
   db:
     image: 'postgres:16.2'
@@ -48,7 +51,48 @@ services:
     env_file:
       - .env
 
+  elasticsearch:
+    image: elasticsearch:8.9.0
+    container_name: elasticsearch
+    restart: always
+    volumes:
+      - elastic-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      xpack.security.enabled: "false"
+      discovery.type: single-node
+
+  logstash:
+    image: logstash:8.9.0
+    container_name: logstash
+    restart: always
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - "9600:9600"
+      - "5000:5000"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    image: kibana:8.9.0
+    container_name: kibana
+    restart: always
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+
 volumes:
   pgdata:
+  elastic-data:
+  logstash:
 networks:
   macscode_network:
