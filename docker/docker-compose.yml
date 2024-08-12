@@ -36,7 +36,6 @@ services:
     env_file:
       - .env
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
       - LOGSTASH_SERVERS=logstash:5000
 
   db:

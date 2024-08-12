@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+    <!-- Grab the spring boot service name to help to add the JSON -->
+    <springProperty scope="context" name="service" source="spring.application.name"/>
+
+    <if condition='isDefined("LOGSTASH_SERVERS")'>
+        <then>
+            <!-- Add the podname to make it easier to locate issues -->
+            <property scope="context" name="pod" value="${HOSTNAME:-unknown-pod-name}" />
+            <!-- Appender for logstash -->
+            <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+                <destination>${LOGSTASH_SERVERS}</destination>
+                <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+            </appender>
+            <root level="INFO">
+                <appender-ref ref="CONSOLE"/>
+                <appender-ref ref="LOGSTASH"/>
+            </root>
+        </then>
+        <else>
+            <root level="INFO">
+                <appender-ref ref="CONSOLE"/>
+            </root>
+        </else>
+    </if>
+
+</configuration>
