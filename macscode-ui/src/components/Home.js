@@ -2,6 +2,8 @@ import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../AuthContext';
 import Select from 'react-select'; // If using react-select
 import '../styles/Home.css';
+import useFetchSubmissions from "./useFetchSubmissions";
+import Logout from "./Logout";
 
 const Home = () => {
     const { auth } = useContext(AuthContext);
@@ -17,6 +19,7 @@ const Home = () => {
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [topicCounts, setTopicCounts] = useState(''); // Use an array, not a Set
 
+    const submissions = useFetchSubmissions();
 
     useEffect(() => {
         const fetchProblems = async () => {
@@ -163,6 +166,18 @@ const Home = () => {
                 <p>Error loading problems: {error}</p>
             ) : (
                 <div>
+                    <div className="header">
+                        <h1>Home</h1>
+                        <Logout /> {}
+                    </div>
+                    <div>
+                        <h1>Submissions</h1>
+                        {submissions.map(submission => (
+                            <div key={submission.id}>
+                                <p>{submission.problem.name}: {submission.result}</p>
+                            </div>
+                        ))}
+                    </div>
                     <div className="type-banners">
                         <button className={`banner java ${selectedType === 'java' ? 'active' : ''}`} onClick={() => handleBannerClick('java')}>
                             JAVA
