@@ -14,10 +14,17 @@
     justify-content: space-between;
 }
 
+.sort-icon {
+    /*display: inline-flex;*/
+    /*padding-right: 50px;*/
+    /*padding-left: 8px; !* Adjust the space to your liking *!*/
+}
+
+
 
 .table-header {
     display: grid;
-    grid-template-columns: 2.5fr 1fr 1fr 1fr;
+    grid-template-columns: 0.5fr 2.5fr 1fr 1fr 1fr;
     font-weight: bold;
     text-transform: uppercase;
     padding: 10px 10px;
@@ -34,7 +41,7 @@
 
 .problem-item {
     display: grid;
-    grid-template-columns: 2.5fr 1fr 1fr 1fr;
+    grid-template-columns: 0.5fr 2.5fr 1fr 1fr 1fr;
     align-items: center;
     border-bottom: 1px solid #6c757d;
     padding: 15px 10px;
@@ -73,6 +80,13 @@
     color: #F44336;
 }
 
+.status-icon {
+    display: flex; /* Uses flexbox for alignment */
+    align-items: center; /* Centers content vertically */
+    justify-content: center; /* Centers content horizontally, if needed */
+    margin-right: 10px; /* Adds space to the right, if in a row of elements */
+    }
+
 .type-banners {
     display: flex;
     justify-content: space-evenly;
@@ -100,6 +114,7 @@
     align-items: center;
     justify-content: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; /* Black outline */
 }
 
 .banner:hover {
@@ -123,37 +138,116 @@
 }
 
 .banner.karel {
-    background-image: url('../images/cpp.png');
+    background-image: url('../images/img.png');
 }
 
 .topics-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Adjust column width as necessary */
-    gap: 15px; /* Spacing between grid items */
-    padding: 20px; /* Padding around the entire grid */
-    background-color: #f0f0f0; /* Light grey background for the grid */
+    display: flex;
+    flex-wrap: wrap;
+    background-color: #252525;
+    align-items: center;
 }
 
 .topic-item {
-    background-color: #887b7b; /* White background for each topic */
-    border: 1px solid #cccccc; /* Light grey border */
-    padding: 10px 15px; /* Padding inside each topic */
-    text-align: center; /* Center text */
-    font-weight: bold; /* Make the font bold */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for 3D effect */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: transform 0.2s, box-shadow 0.2s; /* Smooth transition for hover effects */
+    padding: 10px 15px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 30px;
 }
 
+.topic-label {
+    flex-grow: 1;
+    margin-right: 5px;
+}
+
+.topic-count {
+    background-color: #de9c45; /* Slightly lighter background for the count */
+    border-radius: 15px; /* Circular shape for the count */
+    padding: 5px 10px; /* Dynamic padding based on content size */
+    color: white;
+    display: inline-flex; /* Use inline-flex to center content */
+    justify-content: center; /* Centers content horizontally */
+    align-items: center; /* Centers content vertically */
+    /*font-weight: bold; !* Optional: makes numbers bold *!*/
+    min-width: 10px; /* Minimum width to maintain a circular shape for smaller numbers */
+    height: 20px; /* Height adjusts automatically */
+    /*aspect-ratio: 1 / 1; !* Keeps width and height equal to maintain circle shape *!*/
+}
+
+
 .topic-item:hover {
-    transform: translateY(-3px); /* Slightly raise the item on hover */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Enhance shadow on hover */
+    color: #007bff; /* White text for contrast */
+
+    transform: scale(1.1); /* Slightly enlarge the item on hover */
+    /*transform: translateY(-3px); !* Slightly raise the item on hover *!*/
+    /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); !* Enhance shadow on hover *!*/
 }
 
 .topic-item.selected {
-    background-color: #007bff; /* Blue background for selected topics */
-    color: #ffffff; /* White text for contrast */
-    border-color: #0056b3; /* Darker blue border for selected topics */
+    /*background-color: #007bff; !* Blue background for selected topics *!*/
+    color: #007bff; /* White text for contrast */
+    /*border-color: #0056b3; !* Darker blue border for selected topics *!*/
 }
+.controls-row {
+    display: flex;
+    justify-content: space-between; /* Adjust if necessary to 'flex-start' or 'center' */
+    align-items: center;
+    gap: 10px;
+    /*padding: 10px;*/
+}
+
+.control-item {
+    flex: 1; /* Ensures equal space distribution */
+    box-sizing: border-box; /* Includes padding and border in the width */
+}
+
+.select-control, .text-input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    color: #000; /* Ensures text color is consistent */
+    font-size: 16px;
+    box-sizing: border-box; /* Critical for consistent sizing */
+}
+
+.select__control {
+    cursor: pointer;
+    background-color: #fff;
+    border-radius: 6px;
+}
+
+.select__menu {
+    background-color: #444;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.select__option {
+    padding: 10px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.select__option--is-focused, .select__option--is-selected {
+    background-color: #555;
+    color: #FFF;
+}
+
+.select__option:hover {
+    background-color: #666;
+    color: #DDD;
+}
+
+.text-input:focus {
+    box-shadow: 0 0 0 2px #7289DA; /* Focus glow */
+    outline: none;
+}
+
+/* Reset any margin that might affect the layout */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
 
 
