@@ -15,12 +15,8 @@
 }
 
 .sort-icon {
-    /*display: inline-flex;*/
-    /*padding-right: 50px;*/
-    /*padding-left: 8px; !* Adjust the space to your liking *!*/
+    padding-left: 8px;
 }
-
-
 
 .table-header {
     display: grid;
@@ -81,10 +77,10 @@
 }
 
 .status-icon {
-    display: flex; /* Uses flexbox for alignment */
-    align-items: center; /* Centers content vertically */
-    justify-content: center; /* Centers content horizontally, if needed */
-    margin-right: 10px; /* Adds space to the right, if in a row of elements */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
     }
 
 .type-banners {
@@ -114,7 +110,7 @@
     align-items: center;
     justify-content: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; /* Black outline */
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
 
 .banner:hover {
@@ -161,53 +157,53 @@
 }
 
 .topic-count {
-    background-color: #de9c45; /* Slightly lighter background for the count */
-    border-radius: 15px; /* Circular shape for the count */
-    padding: 5px 10px; /* Dynamic padding based on content size */
+    background-color: #de9c45;
+    border-radius: 15px;
+    padding: 5px 10px;
     color: white;
-    display: inline-flex; /* Use inline-flex to center content */
-    justify-content: center; /* Centers content horizontally */
-    align-items: center; /* Centers content vertically */
-    /*font-weight: bold; !* Optional: makes numbers bold *!*/
-    min-width: 10px; /* Minimum width to maintain a circular shape for smaller numbers */
-    height: 20px; /* Height adjusts automatically */
-    /*aspect-ratio: 1 / 1; !* Keeps width and height equal to maintain circle shape *!*/
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    min-width: 10px;
+    height: 20px;
+
 }
 
 
 .topic-item:hover {
-    color: #007bff; /* White text for contrast */
+    color: #007bff;
 
-    transform: scale(1.1); /* Slightly enlarge the item on hover */
-    /*transform: translateY(-3px); !* Slightly raise the item on hover *!*/
-    /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); !* Enhance shadow on hover *!*/
+    transform: scale(1.1);
+
+
 }
 
 .topic-item.selected {
-    /*background-color: #007bff; !* Blue background for selected topics *!*/
-    color: #007bff; /* White text for contrast */
-    /*border-color: #0056b3; !* Darker blue border for selected topics *!*/
+
+    color: #007bff;
+
 }
 .controls-row {
     display: flex;
-    justify-content: space-between; /* Adjust if necessary to 'flex-start' or 'center' */
+    justify-content: space-between;
     align-items: center;
     gap: 10px;
-    /*padding: 10px;*/
+
 }
 
 .control-item {
-    flex: 1; /* Ensures equal space distribution */
-    box-sizing: border-box; /* Includes padding and border in the width */
+    flex: 1;
+    box-sizing: border-box;
 }
 
 .select-control, .text-input {
     width: 100%;
     padding: 12px;
     border-radius: 6px;
-    color: #000; /* Ensures text color is consistent */
+    color: #000;
     font-size: 16px;
-    box-sizing: border-box; /* Critical for consistent sizing */
+    box-sizing: border-box;
 }
 
 .select__control {
@@ -237,11 +233,11 @@
 }
 
 .text-input:focus {
-    box-shadow: 0 0 0 2px #7289DA; /* Focus glow */
+    box-shadow: 0 0 0 2px #7289DA;
     outline: none;
 }
 
-/* Reset any margin that might affect the layout */
+
 * {
     margin: 0;
     padding: 0;
