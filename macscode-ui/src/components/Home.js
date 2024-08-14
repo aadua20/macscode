@@ -1,14 +1,14 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {AuthContext} from '../AuthContext';
-import Select from 'react-select'; // If using react-select
+import Select from 'react-select';
 import '../styles/Home.css';
 import useFetchSubmissions from "./useFetchSubmissions";
 import Logout from "./Logout";
-import {FaCheckCircle, FaTimesCircle, FaRegCircle} from 'react-icons/fa';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCaretUp, faCaretDown, faSort } from '@fortawesome/free-solid-svg-icons';
-
-
+import {FaCheckCircle, FaRegCircle, FaTimesCircle} from 'react-icons/fa';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faCaretDown, faCaretUp, faSort} from '@fortawesome/free-solid-svg-icons';
+import {IoMdClose} from "react-icons/io";
+import {GoSearch} from "react-icons/go";
 
 
 const Home = () => {
@@ -17,14 +17,15 @@ const Home = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [sortConfig, setSortConfig] = useState({key: null, direction: 'none'});
-    const [selectedType, setSelectedType] = useState('all');  // 'java', 'cpp', 'karel', or 'all'
-    const [selectedStatus, setSelectedStatus] = useState('all'); // New state for status
-    const [selectedDifficulty, setSelectedDifficulty] = useState('all');  // New state for difficulty
-    const [searchTerm, setSearchTerm] = useState('');  // New state for search term
-    const [topics, setTopics] = useState([]); // Array to store topics from the database
-    const [selectedTopics, setSelectedTopics] = useState([]); // Use an array, not a Set
+    const [selectedType, setSelectedType] = useState('all');
+    const [selectedStatus, setSelectedStatus] = useState('all');
+    const [selectedDifficulty, setSelectedDifficulty] = useState('all');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [topics, setTopics] = useState([]);
+    const [selectedTopics, setSelectedTopics] = useState([]);
     const [selectedCategories, setSelectedCategories] = useState([]);
-    const [topicCounts, setTopicCounts] = useState(''); // Use an array, not a Set
+    const [topicCounts, setTopicCounts] = useState('');
+    const [isActive, setIsActive] = useState(false);
 
     const submissions = useFetchSubmissions();
 
@@ -57,12 +58,23 @@ const Home = () => {
         fetchProblems();
     }, [sortConfig]);
 
+    const handleIconClick = () => {
+        setIsActive(!isActive);
+
+    };
+
+    const handleInputBlur = (e) => {
+        if (searchTerm.trim() === '') {
+            setIsActive(false);
+        }
+    };
+
     const requestSort = (key) => {
         let direction = 'asc';
         if (sortConfig.key === key && sortConfig.direction === 'asc') {
             direction = 'desc';
         } else if (sortConfig.key === key && sortConfig.direction === 'desc') {
-            direction = 'none';  // Optional: Add a 'none' state to reset the sort order
+            direction = 'none';
         }
         setSortConfig({key, direction});
     };
@@ -155,9 +167,9 @@ const Home = () => {
     const handleCategoriesClick = (topic) => {
         setSelectedCategories(prevTopics => {
             if (prevTopics.includes(topic)) {
-                return prevTopics.filter(t => t !== topic);  // Remove topic if it's already selected
+                return prevTopics.filter(t => t !== topic);
             } else {
-                return [...prevTopics, topic];  // Add topic if it's not already selected
+                return [...prevTopics, topic];
             }
         });
     };
@@ -177,8 +189,6 @@ const Home = () => {
             return 'ToDo';
         }
     };
-
-    // Or using Font Awesome Icons (ensure you have Font Awesome installed and imported)
 
     const statusIcons = {
         Done: <FaCheckCircle color="green"/>,
@@ -237,7 +247,7 @@ const Home = () => {
                             ))}
                         </div>
 
-                        <div className="control-item">
+                        <div className="multi-select">
                             <Select
                                 isMulti
                                 name="topics"
@@ -249,6 +259,8 @@ const Home = () => {
                                 isSearchable={true}
                             />
                         </div>
+
+
                         <div className="controls-row">
                             <div className="control-item">
                                 <Select
@@ -270,16 +282,22 @@ const Home = () => {
                                     isSearchable={true}
                                 />
                             </div>
-                            <div className="control-item">
+
+                            <div className={`search-container ${isActive ? 'active' : ''}`}>
+                                <button type="button" onClick={handleIconClick}>
+                                    {isActive ? <IoMdClose/> : <GoSearch/>}
+                                </button>
                                 <input
-                                    type="text"
-                                    placeholder="Search by title..."
+                                    type="search"
                                     value={searchTerm}
+                                    placeholder="Search by title..."
                                     onChange={handleSearchChange}
-                                    className="text-input"
+                                    onBlur={handleInputBlur}
                                 />
                             </div>
+
                         </div>
+
                     </div>
                     <div className="table-header">
                         <span className="header-item">Status</span>
@@ -294,7 +312,7 @@ const Home = () => {
                             ) : <FontAwesomeIcon icon={faSort} className="sort-icon"/>}
                         </span>
                         <span
-                              onClick={() => requestSort('type')}>
+                            onClick={() => requestSort('type')}>
                             Type
                             {sortConfig.key === 'type' && sortConfig.direction !== 'none' ? (
                                 sortConfig.direction === 'asc' ? (
@@ -305,11 +323,11 @@ const Home = () => {
                             ) : <FontAwesomeIcon icon={faSort} className="sort-icon"/>}
                         </span>
                         <span
-                              onClick={() => requestSort('difficulty')}>Difficulty {sortConfig.key === 'difficulty' && sortConfig.direction !== 'none' ? (
+                            onClick={() => requestSort('difficulty')}>Difficulty {sortConfig.key === 'difficulty' && sortConfig.direction !== 'none' ? (
                             sortConfig.direction === 'asc' ? (
-                                <FontAwesomeIcon icon={faCaretUp} />
+                                <FontAwesomeIcon icon={faCaretUp}/>
                             ) : (
-                                <FontAwesomeIcon icon={faCaretDown} />
+                                <FontAwesomeIcon icon={faCaretDown}/>
                             )
                         ) : <FontAwesomeIcon icon={faSort}/>}</span>
                         <span className="header-item">Topics</span>
