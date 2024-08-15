@@ -1,10 +1,14 @@
 .container {
     font-family: 'Arial', sans-serif;
-    padding: 10px;
+    padding: 80px;
     background-color: #252525;
     color: #ffffff;
     margin: 0 auto;
     max-width: 960px;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 .header-item {
@@ -114,7 +118,7 @@
 }
 
 .banner:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     background-color: rgba(255, 255, 255, 0.1);
 }

@@ -1,16 +1,15 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {AuthContext} from '../AuthContext';
+import React, {useCallback, useEffect, useState} from 'react';
 import '../styles/Home.css';
 import useFetchSubmissions from "./useFetchSubmissions";
-import Logout from "./Logout";
 import TypeBanners from "./homepage/TypeBanners";
 import TopicsGrid from "./homepage/TopicsGrid";
 import Filters from "./homepage/Filters";
 import TableHeader from "./homepage/TableHeader";
 import ProblemList from "./homepage/ProblemList";
+import TopBar from "./TopBar";
 
 const Home = () => {
-    const {auth} = useContext(AuthContext);
+    // const {auth} = useContext(AuthContext);
     const [problems, setProblems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -21,8 +20,6 @@ const Home = () => {
     const [topics, setTopics] = useState([]);
     const [topicCounts, setTopicCounts] = useState('');
 
-    const difficultyOrder = {'easy': 1, 'medium': 2, 'hard': 3};
-
     const filteredProblems = filteredResults.filter(problem => {
         return (
             (selectedType === 'all' || problem.type.toLowerCase() === selectedType) &&
@@ -31,6 +28,30 @@ const Home = () => {
     });
 
     const submissions = useFetchSubmissions();
+
+    const sortProblems = useCallback((problems, {key, direction}) => {
+        const difficultyOrder = {'easy': 1, 'medium': 2, 'hard': 3};
+
+        if (!key || direction === 'none') return problems;
+
+        return [...problems].sort((a, b) => {
+            if (key === 'title') {
+                const orderA = a.problemId.order;
+                const orderB = b.problemId.order;
+                return direction === 'asc' ? orderA - orderB : orderB - orderA;
+            } else if (key === 'difficulty') {
+                const rankA = difficultyOrder[a.difficulty.toLowerCase()];
+                const rankB = difficultyOrder[b.difficulty.toLowerCase()];
+                return direction === 'asc' ? rankA - rankB : rankB - rankA;
+            } else {
+                const itemA = a[key].toLowerCase();
+                const itemB = b[key].toLowerCase();
+                if (itemA < itemB) return direction === 'asc' ? -1 : 1;
+                if (itemA > itemB) return direction === 'asc' ? 1 : -1;
+                return 0;
+            }
+        });
+    }, []);
 
     useEffect(() => {
         const fetchProblems = async () => {
@@ -62,7 +83,7 @@ const Home = () => {
         };
 
         fetchProblems();
-    }, [sortConfig]);
+    }, [sortConfig, sortProblems]);
 
 
     const requestSort = (key) => {
@@ -73,34 +94,6 @@ const Home = () => {
             direction = 'none';
         }
         setSortConfig({key, direction});
-    };
-
-    const sortProblems = (problems, {key, direction}) => {
-        if (!key || direction === 'none') return problems;
-
-        const sortedProblems = [...problems].sort((a, b) => {
-            if (key === 'title') {
-                const orderA = a.problemId.order;
-                const orderB = b.problemId.order;
-                if (direction === 'asc') {
-                    return orderA - orderB;
-                } else {
-                    return orderB - orderA;
-                }
-            } else if (key === 'difficulty') {
-                const rankA = difficultyOrder[a.difficulty.toLowerCase()];
-                const rankB = difficultyOrder[b.difficulty.toLowerCase()];
-                return direction === 'asc' ? rankA - rankB : rankB - rankA;
-            } else {
-                const itemA = a[key].toLowerCase();
-                const itemB = b[key].toLowerCase();
-                if (itemA < itemB) return direction === 'asc' ? -1 : 1;
-                if (itemA > itemB) return direction === 'asc' ? 1 : -1;
-                return 0;
-            }
-        });
-
-        return sortedProblems;
     };
 
     const handleBannerClick = (type) => {
@@ -140,16 +133,13 @@ const Home = () => {
 
     return (
         <div className="container">
+            <TopBar/>
             {isLoading ? (
                 <p>Loading problems...</p>
             ) : error ? (
                 <p>Error loading problems: {error}</p>
             ) : (
                 <div>
-                    <div className="header">
-                        <h1>Home</h1>
-                        <Logout/> {}
-                    </div>
                     <div>
                         <TypeBanners
                             selectedType={selectedType}
