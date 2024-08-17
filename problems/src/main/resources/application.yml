@@ -12,3 +12,10 @@ execution:
 jwt:
   secret: macscodesecretkeymacscodesecretkeymacscodesecretkeymacscodese
   expiration-time: 1209600000  # 2 weeks
+logging:
+  level:
+    org:
+    springframework:
+      web:
+        socket: DEBUG
+        handler: DEBUG

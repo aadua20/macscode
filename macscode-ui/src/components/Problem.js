@@ -6,6 +6,33 @@ import SolutionTemplate from './SolutionTemplate';
 import TestCases from './TestCases';
 import ResultsModal from './ResultsModal';
 import '../styles/Problem.css';
+import { Client } from '@stomp/stompjs';
+
+const client = new Client({
+    brokerURL: 'ws://localhost:8080/websocket-endpoint/websocket', // WebSocket endpoint
+    reconnectDelay: 5000, // Automatically reconnect with a delay if disconnected
+    onConnect: () => {
+        console.log('Connected to WebSocket');
+
+        // Subscribe to a topic
+        client.subscribe('/topic/messages', (message) => {
+            console.log('Received message: ' + message.body);
+        });
+
+        // Send a message to the server
+        client.publish({
+            destination: '/app/sendMessage',
+            body: 'Hello, Server!',
+        });
+    },
+    onStompError: (frame) => {
+        console.error('Broker reported error: ' + frame.headers['message']);
+        console.error('Additional details: ' + frame.body);
+    },
+});
+
+// Activate the client
+client.activate();
 
 const Problem = () => {
     const { course, order } = useParams();

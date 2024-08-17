@@ -22,7 +22,10 @@ public class SecurityConfig {
     private static final String[] WHITE_LIST_URL = {"/problems/**",
             "/submissions/**",
             "/swagger-ui/**",
-            "/v3/**"
+            "/v3/**",
+//            "/websocket-endpoint/**",
+            // TODO: shecvale es websocketebistvis
+            "**"
     };
 
     @Bean
