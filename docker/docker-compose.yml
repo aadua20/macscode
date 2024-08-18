@@ -17,7 +17,7 @@ services:
     container_name: problems-db
     image: mongo:latest
     ports:
-      - 9100:27017
+      - "9100:27017"
     volumes:
       - ./problemsdb:/data/db
 
@@ -47,8 +47,16 @@ services:
       - macscode_network
     env_file:
       - .env
+  macscode-admin:
+    build:
+      context: ../macscode-admin
+      dockerfile: ./Dockerfile
+    container_name: macscode-admin
+    ports:
+      - "8087:8087"
 
 volumes:
   pgdata:
 networks:
   macscode_network:
+    driver: bridge
