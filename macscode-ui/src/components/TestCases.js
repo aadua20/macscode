@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../styles/Problem.css'; // Ensure you have the styles in Problem.css
+import '../styles/Problem.css';
 
 const TestCases = ({ testCases }) => {
     const [activeTab, setActiveTab] = useState(0);
