@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import AceEditor from 'react-ace';
-import 'ace-builds/src-noconflict/mode-javascript'; // Importing JavaScript mode
-import 'ace-builds/src-noconflict/theme-github'; // Importing GitHub theme
+import 'ace-builds/src-noconflict/mode-javascript';
+import 'ace-builds/src-noconflict/theme-github';
 import '../styles/SolutionTemplate.css';
 
 const SolutionTemplate = ({ solutionFileTemplate, onChange }) => {
@@ -17,8 +17,8 @@ const SolutionTemplate = ({ solutionFileTemplate, onChange }) => {
     return (
         <div className="solution-template">
             <AceEditor
-                mode="java" // Change to the appropriate language mode if needed
-                theme="github" // Change to the preferred theme
+                mode="java"
+                theme="github"
                 name="editor"
                 value={code}
                 onChange={handleChange}
@@ -32,7 +32,7 @@ const SolutionTemplate = ({ solutionFileTemplate, onChange }) => {
                     tabSize: 4
                 }}
                 width="100%"
-                height="400px" // Adjust the height as needed
+                height="400px"
             />
         </div>
     );
