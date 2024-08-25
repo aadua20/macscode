@@ -270,3 +270,11 @@
     color: #aaa;
     font-style: italic;
 }
+
+.problem-item {
+    cursor: pointer;
+}
+
+.problem-item:hover {
+    background-color: #3a3b3c;
+}

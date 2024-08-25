@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import ProblemDetails from './ProblemDetails';
@@ -8,32 +8,6 @@ import ResultsModal from './ResultsModal';
 import '../styles/Problem.css';
 import { Client } from '@stomp/stompjs';
 
-const client = new Client({
-    brokerURL: 'ws://localhost:8080/websocket-endpoint/websocket', // WebSocket endpoint
-    reconnectDelay: 5000, // Automatically reconnect with a delay if disconnected
-    onConnect: () => {
-        console.log('Connected to WebSocket');
-
-        // Subscribe to a topic
-        client.subscribe('/topic/messages', (message) => {
-            console.log('Received message: ' + message.body);
-        });
-
-        // Send a message to the server
-        client.publish({
-            destination: '/app/sendMessage',
-            body: 'Hello, Server!',
-        });
-    },
-    onStompError: (frame) => {
-        console.error('Broker reported error: ' + frame.headers['message']);
-        console.error('Additional details: ' + frame.body);
-    },
-});
-
-// Activate the client
-client.activate();
-
 const Problem = () => {
     const { course, order } = useParams();
     const [problem, setProblem] = useState(null);
@@ -42,7 +16,45 @@ const Problem = () => {
     const [testCases, setTestCases] = useState([]);
     const [results, setResults] = useState([]);
     const [showResults, setShowResults] = useState(false);
-    const [hasSubmitted, setHasSubmitted] = useState(false); // Track if either button has been clicked
+    const [hasSubmitted, setHasSubmitted] = useState(false);
+
+    const clientRef = useRef(null); // WebSocket client reference
+
+    useEffect(() => {
+        // Initialize WebSocket client
+        clientRef.current = new Client({
+            brokerURL: 'ws://localhost:8080/websocket-endpoint/websocket',
+            reconnectDelay: 5000,
+            onConnect: () => {
+                console.log('Connected to WebSocket');
+
+                // Subscribe to run and submit result topics
+                clientRef.current.subscribe('/topic/runResult', (message) => {
+                    const runResults = JSON.parse(message.body);
+                    setResults(runResults);
+                    setShowResults(true);
+                });
+
+                clientRef.current.subscribe('/topic/submitResult', (message) => {
+                    const submitResults = JSON.parse(message.body);
+                    setResults(submitResults);
+                    setShowResults(true);
+                });
+            },
+            onStompError: (frame) => {
+                console.error('Broker reported error: ' + frame.headers['message']);
+                console.error('Additional details: ' + frame.body);
+            },
+        });
+
+        // Activate WebSocket client
+        clientRef.current.activate();
+
+        // Cleanup function to disconnect WebSocket when the component is unmounted
+        return () => {
+            clientRef.current.deactivate();
+        };
+    }, []); // Run only once on mount
 
     useEffect(() => {
         const fetchProblem = async () => {
@@ -64,34 +76,32 @@ const Problem = () => {
         setCode(newCode);
     };
 
-    const handleSubmit = async () => {
-        try {
-            const response = await axios.post('http://localhost:8080/problems/submit', {
+    const handleSubmit = () => {
+        if (!problem) return;
+
+        // Send a submit solution request via WebSocket
+        clientRef.current.publish({
+            destination: '/app/submitSolution',
+            body: JSON.stringify({
                 problemId: problem.id,
-                solution: code
-            });
-            setResults(response.data);
-            setShowResults(true);
-            setHasSubmitted(true); // Set to true after submission
-        } catch (error) {
-            console.error('Error submitting solution', error);
-            setError('Error submitting solution. Please try again later.');
-        }
+                solution: code,
+            }),
+        });
+        setHasSubmitted(true); // Set to true after submission
     };
 
-    const handleRun = async () => {
-        try {
-            const response = await axios.post('http://localhost:8080/problems/run', {
+    const handleRun = () => {
+        if (!problem) return;
+
+        // Send a run solution request via WebSocket
+        clientRef.current.publish({
+            destination: '/app/runSolution',
+            body: JSON.stringify({
                 problemId: problem.id,
-                solution: code
-            });
-            setResults(response.data);
-            setShowResults(true);
-            setHasSubmitted(true); // Set to true after running
-        } catch (error) {
-            console.error('Error running solution', error);
-            setError('Error running solution. Please try again later.');
-        }
+                solution: code,
+            }),
+        });
+        setHasSubmitted(true); // Set to true after running
     };
 
     const handleCloseResults = () => {
