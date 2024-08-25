@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import AceEditor from 'react-ace';
-import 'ace-builds/src-noconflict/mode-javascript';
-import 'ace-builds/src-noconflict/theme-github';
+import 'ace-builds/src-noconflict/mode-java';
+import 'ace-builds/src-noconflict/theme-monokai';
+import 'ace-builds/src-noconflict/ext-language_tools';
 import '../styles/SolutionTemplate.css';
 
 const SolutionTemplate = ({ solutionFileTemplate, onChange }) => {
@@ -18,7 +19,7 @@ const SolutionTemplate = ({ solutionFileTemplate, onChange }) => {
         <div className="solution-template">
             <AceEditor
                 mode="java"
-                theme="github"
+                theme="monokai"
                 name="editor"
                 value={code}
                 onChange={handleChange}
