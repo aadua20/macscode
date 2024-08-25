@@ -17,27 +17,28 @@ const Problem = () => {
     const [results, setResults] = useState([]);
     const [showResults, setShowResults] = useState(false);
     const [hasSubmitted, setHasSubmitted] = useState(false);
+    const [responseReceived, setResponseReceived] = useState(false);
 
-    const clientRef = useRef(null); // WebSocket client reference
+    const clientRef = useRef(null);
 
     useEffect(() => {
-        // Initialize WebSocket client
         clientRef.current = new Client({
             brokerURL: 'ws://localhost:8080/websocket-endpoint/websocket',
             reconnectDelay: 5000,
             onConnect: () => {
                 console.log('Connected to WebSocket');
 
-                // Subscribe to run and submit result topics
                 clientRef.current.subscribe('/topic/runResult', (message) => {
                     const runResults = JSON.parse(message.body);
                     setResults(runResults);
+                    setResponseReceived(true);
                     setShowResults(true);
                 });
 
                 clientRef.current.subscribe('/topic/submitResult', (message) => {
                     const submitResults = JSON.parse(message.body);
                     setResults(submitResults);
+                    setResponseReceived(true);
                     setShowResults(true);
                 });
             },
@@ -47,14 +48,12 @@ const Problem = () => {
             },
         });
 
-        // Activate WebSocket client
         clientRef.current.activate();
 
-        // Cleanup function to disconnect WebSocket when the component is unmounted
         return () => {
             clientRef.current.deactivate();
         };
-    }, []); // Run only once on mount
+    }, []);
 
     useEffect(() => {
         const fetchProblem = async () => {
@@ -79,7 +78,6 @@ const Problem = () => {
     const handleSubmit = () => {
         if (!problem) return;
 
-        // Send a submit solution request via WebSocket
         clientRef.current.publish({
             destination: '/app/submitSolution',
             body: JSON.stringify({
@@ -87,13 +85,13 @@ const Problem = () => {
                 solution: code,
             }),
         });
-        setHasSubmitted(true); // Set to true after submission
+        setHasSubmitted(true);
+        setResponseReceived(false);
     };
 
     const handleRun = () => {
         if (!problem) return;
 
-        // Send a run solution request via WebSocket
         clientRef.current.publish({
             destination: '/app/runSolution',
             body: JSON.stringify({
@@ -101,7 +99,8 @@ const Problem = () => {
                 solution: code,
             }),
         });
-        setHasSubmitted(true); // Set to true after running
+        setHasSubmitted(true);
+        setResponseReceived(false);
     };
 
     const handleCloseResults = () => {
@@ -138,7 +137,7 @@ const Problem = () => {
                             Submit
                         </button>
                         <button
-                            className={`view-results-button ${hasSubmitted ? 'visible' : ''}`}
+                            className={`view-results-button ${hasSubmitted && responseReceived ? 'visible' : ''}`}
                             onClick={() => setShowResults(true)}
                         >
                             View Results
