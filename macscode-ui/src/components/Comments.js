@@ -3,6 +3,8 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import '../styles/Comments.css';
 import { AuthContext } from '../AuthContext';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const Comments = ({ problemId }) => {
     const { auth } = useContext(AuthContext);
@@ -33,13 +35,49 @@ const Comments = ({ problemId }) => {
         fetchComments();
     }, [problemId, auth]);
 
+    const cleanHtmlContent = (html) => {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+
+        const hasNonEmptyChild = (node) => {
+            if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '') {
+                return true;
+            }
+            if (node.nodeType === Node.ELEMENT_NODE) {
+                if (node.tagName === 'IMG') {
+                    return true; // Always preserve images
+                }
+                return Array.from(node.childNodes).some(hasNonEmptyChild);
+            }
+            return false;
+        };
+
+        const removeEmptyNodes = (node) => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+                const childNodes = Array.from(node.childNodes);
+                if (!hasNonEmptyChild(node)) {
+                    node.remove();
+                    return;
+                }
+                childNodes.forEach(removeEmptyNodes);
+            }
+        };
+
+        Array.from(tempDiv.childNodes).forEach(removeEmptyNodes);
+
+        return tempDiv.innerHTML.trim() !== '' ? tempDiv.innerHTML : '';
+    };
+
+
     const handleAddComment = async () => {
-        if (newComment.trim() === '') return;
+        const cleanedComment = cleanHtmlContent(newComment);
+        console.log(cleanedComment)
+        if (!cleanedComment) return;
 
         try {
             const response = await axios.post('http://localhost:8082/discussion/addComment', {
                 problemId,
-                comment: newComment,
+                comment: cleanedComment,
                 username,
             });
             setComments([response.data, ...comments]);
@@ -75,13 +113,17 @@ const Comments = ({ problemId }) => {
     return (
         <div className="comments-container">
             <div className="add-comment">
-                <textarea
+                <ReactQuill
                     value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
+                    onChange={setNewComment}
                     placeholder="Add your comment..."
-                    maxLength={500}
+                    modules={modules}
+                    formats={formats}
                 />
                 <button onClick={handleAddComment}>Submit</button>
+            </div>
+            <div className="comments-summary">
+                <span className="comments-count">Total Comments: {comments.length}</span>
             </div>
             <div className="comments-list">
                 {currentComments.map((comment) => (
@@ -108,6 +150,39 @@ const Comment = ({ comment, username, formatDate }) => {
     const [newReply, setNewReply] = useState('');
     const [showReplies, setShowReplies] = useState(false);
 
+    const cleanHtmlContent = (html) => {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+
+        const hasNonEmptyChild = (node) => {
+            if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '') {
+                return true;
+            }
+            if (node.nodeType === Node.ELEMENT_NODE) {
+                if (node.tagName === 'IMG') {
+                    return true; // Always preserve images
+                }
+                return Array.from(node.childNodes).some(hasNonEmptyChild);
+            }
+            return false;
+        };
+
+        const removeEmptyNodes = (node) => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+                const childNodes = Array.from(node.childNodes);
+                if (!hasNonEmptyChild(node)) {
+                    node.remove();
+                    return;
+                }
+                childNodes.forEach(removeEmptyNodes);
+            }
+        };
+
+        Array.from(tempDiv.childNodes).forEach(removeEmptyNodes);
+
+        return tempDiv.innerHTML.trim() !== '' ? tempDiv.innerHTML : '';
+    };
+
     const fetchReplies = async () => {
         if (!showReplies) {
             try {
@@ -121,12 +196,13 @@ const Comment = ({ comment, username, formatDate }) => {
     };
 
     const handleAddReply = async () => {
-        if (newReply.trim() === '') return;
+        const cleanedReply = cleanHtmlContent(newReply);
+        if (!cleanedReply) return;
 
         try {
             const response = await axios.post('http://localhost:8082/discussion/addReply', {
                 commentId: comment.id,
-                reply: newReply,
+                reply: cleanedReply,
                 username,
             });
             setReplies([...replies, response.data]);
@@ -142,7 +218,7 @@ const Comment = ({ comment, username, formatDate }) => {
                 <span className="comment-username">{comment.username}</span>
                 <span className="comment-date">{formatDate(comment.commentDate)}</span>
             </div>
-            <p className="comment-body">{comment.comment}</p>
+            <div className="comment-body" dangerouslySetInnerHTML={{ __html: comment.comment }}></div>
             <button className="reply-button" onClick={fetchReplies}>
                 {showReplies ? 'Hide Replies' : 'Show Replies'}
             </button>
@@ -154,15 +230,16 @@ const Comment = ({ comment, username, formatDate }) => {
                                 <span className="reply-username">{reply.username}</span>
                                 <span className="reply-date">{formatDate(reply.replyDate)}</span>
                             </div>
-                            <p className="reply-body">{reply.reply}</p>
+                            <div className="reply-body" dangerouslySetInnerHTML={{ __html: reply.reply }}></div>
                         </div>
                     ))}
                     <div className="add-reply">
-                        <textarea
+                        <ReactQuill
                             value={newReply}
-                            onChange={(e) => setNewReply(e.target.value)}
+                            onChange={setNewReply}
                             placeholder="Add your reply..."
-                            maxLength={250}
+                            modules={modules}
+                            formats={formats}
                         />
                         <button onClick={handleAddReply}>Submit</button>
                     </div>
@@ -171,5 +248,26 @@ const Comment = ({ comment, username, formatDate }) => {
         </div>
     );
 };
+
+const modules = {
+    toolbar: [
+        [{ 'header': '1' }, { 'header': '2' }],
+        ['bold', 'italic', 'underline'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        ['link', 'image'],
+        [{ 'script': 'sub' }, { 'script': 'super' }],
+        [{ 'indent': '-1' }, { 'indent': '+1' }],
+        [{ 'direction': 'rtl' }],
+        ['clean']
+    ],
+};
+
+const formats = [
+    'header', 'font', 'size',
+    'bold', 'italic', 'underline',
+    'list', 'bullet', 'indent',
+    'link', 'image', 'color', 'background',
+    'align', 'script', 'direction'
+];
 
 export default Comments;

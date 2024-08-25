@@ -1,3 +1,13 @@
+.comments-summary {
+    margin-bottom: 1em;
+    font-size: 1.2em;
+    color: #1e4fa9;
+}
+
+.comments-count {
+    font-weight: bold;
+}
+
 .comments-container {
     max-width: 95vw;
     margin: 0 auto;
@@ -57,33 +67,35 @@
 .add-comment,
 .add-reply {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     margin-bottom: 20px;
 }
 
-.add-comment textarea,
-.add-reply textarea {
+.add-comment .ql-container,
+.add-reply .ql-container {
     flex: 1;
-    padding: 10px;
     border-radius: 5px;
     background-color: #3c3c3c;
     border: 1px solid #555;
     color: #fff;
-    resize: vertical;
-    font-size: 14px;
-    height: 80px;
     box-sizing: border-box;
 }
 
-.add-comment textarea:focus,
-.add-reply textarea:focus {
-    border-color: #ff8c00;
-    outline: none;
+.add-comment .ql-toolbar,
+.add-reply .ql-toolbar {
+    border: 1px solid #555;
+    border-bottom: none;
+}
+
+.add-comment textarea,
+.add-reply textarea {
+    display: none;
 }
 
 .add-comment button,
 .add-reply button {
-    margin-left: 10px;
+    margin-top: 10px;
+    align-self: flex-start;
     padding: 10px 20px;
     background-color: #007bff;
     color: white;
@@ -129,4 +141,19 @@
 
 .reply-body {
     font-size: 15px;
+}
+
+.ql-toolbar {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.ql-container {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-height: 100px;
+}
+
+.comment-body, .reply-body {
+    white-space: pre-wrap;
 }
