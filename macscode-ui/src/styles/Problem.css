@@ -5,11 +5,11 @@
 
 .problem-left {
     flex: 1;
-    background-color: #252525; /* Adjust as needed */
+    background-color: #252525;
     color: #ffffff;
     padding: 20px;
     box-sizing: border-box;
-    overflow-y: auto; /* Allow scrolling if content is too long */
+    overflow-y: auto;
 }
 
 .problem-right {
@@ -20,19 +20,18 @@
 
 .problem-right-upper {
     flex: 0 0 55%;
-    /*flex: 1;*/
-    background-color: #252525; /* Adjust as needed */
+    background-color: #252525;
     padding: 20px;
     box-sizing: border-box;
-    overflow-y: auto; /* Allow scrolling if content is too long */
+    overflow-y: auto;
 }
 
 .problem-right-lower {
     flex: 0 0 45%;
-    background-color: #252525; /* Adjust as needed */
+    background-color: #252525;
     padding: 20px;
     box-sizing: border-box;
-    border-top: 1px solid #ccc; /* Optional: Add a border between sections */
+    border-top: 1px solid #ccc;
     display: flex;
     flex-direction: column;
 }
@@ -45,7 +44,7 @@
 
 .run-button,
 .submit-button {
-    margin-right: 10px; /* Space between buttons */
+    margin-right: 10px;
     padding: 10px 20px;
     background-color: #007bff;
     color: #fff;
@@ -60,18 +59,18 @@
 }
 
 .view-results-button {
-    margin-left: auto; /* Push to the far right */
+    margin-left: auto;
     padding: 10px 20px;
-    background-color: #28a745; /* Green */
+    background-color: #28a745;
     color: #fff;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    display: none; /* Hidden by default */
+    display: none;
 }
 
 .view-results-button.visible {
-    display: block; /* Show button when needed */
+    display: block;
 }
 
 .error-message {
@@ -83,7 +82,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background-color: #252525; /* Match the dark theme */
+    background-color: #252525;
     color: #ffffff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -97,7 +96,7 @@
 .tab-button {
     flex: 1;
     padding: 10px;
-    background-color: #333333; /* Darker tab background */
+    background-color: #333333;
     border: 1px solid #444444;
     border-radius: 4px 4px 0 0;
     cursor: pointer;
@@ -106,13 +105,13 @@
 }
 
 .tab-button.active {
-    background-color: #444444; /* Highlight active tab */
+    background-color: #444444;
     border-bottom: 1px solid #444444;
     font-weight: bold;
 }
 
 .test-case-content {
-    background-color: #333333; /* Darker content background */
+    background-color: #333333;
     border: 1px solid #444444;
     border-top: none;
     padding: 10px;
@@ -122,26 +121,26 @@
 
 .test-case-content h4, .test-case-content h5 {
     margin: 0;
-    color: #ffffff; /* Light text color for headings */
+    color: #ffffff;
 }
 
 .test-case-content pre {
-    background-color: #1e1e1e; /* Slightly lighter for code blocks */
+    background-color: #1e1e1e;
     padding: 10px;
     border-radius: 4px;
     overflow: auto;
-    white-space: pre-wrap; /* Wrap long lines */
+    white-space: pre-wrap;
 }
 
 .test-case-result {
     margin-top: 10px;
     padding: 10px;
-    background-color: #e8f5e9; /* Light green background for results */
-    border: 1px solid #4caf50; /* Green border */
+    background-color: #e8f5e9;
+    border: 1px solid #4caf50;
     border-radius: 4px;
 }
 
 .test-case-result.fail {
-    background-color: #f8d7da; /* Light red background for failed tests */
-    border-color: #f5c6cb; /* Red border */
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
 }

@@ -1,12 +1,12 @@
 .problem-details {
-    background-color: #252525; /* Match your dark theme */
+    background-color: #252525;
     color: #ffffff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
-    height: 100%; /* Extend to fill the height of the parent container */
+    height: 100%;
 }
 
 .problem-title {
@@ -16,7 +16,7 @@
 
 .problem-meta {
     font-size: 1rem;
-    color: #b0b0b0; /* Lighter color for meta info */
+    color: #b0b0b0;
 }
 
 .problem-description, .problem-topics {
@@ -24,7 +24,7 @@
 }
 
 .problem-description h3, .problem-topics h3 {
-    border-bottom: 2px solid #007bff; /* Accent color */
+    border-bottom: 2px solid #007bff;
     padding-bottom: 5px;
 }
 
