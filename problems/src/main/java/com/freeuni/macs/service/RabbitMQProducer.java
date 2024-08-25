@@ -20,6 +20,5 @@ public class RabbitMQProducer {
 
     public void sendSubmissionRequest(SubmissionRequest submissionRequest) {
         amqpTemplate.convertAndSend(RabbitMQConfig.SUBMISSION_EXCHANGE, RabbitMQConfig.SUBMISSION_ROUTING_KEY, submissionRequest);
-        log.info("Submission request sent: {}", submissionRequest);
     }
 }

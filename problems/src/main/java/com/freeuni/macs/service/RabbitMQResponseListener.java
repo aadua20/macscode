@@ -18,7 +18,6 @@ public class RabbitMQResponseListener {
 
     @RabbitListener(queues = RabbitMQConfig.RESPONSE_QUEUE)
     public void receiveSubmitResponses(List<SubmitResponse> responses) {
-        log.info("Received submit responses: {}", responses);
         responseQueue.add(responses);
     }
 

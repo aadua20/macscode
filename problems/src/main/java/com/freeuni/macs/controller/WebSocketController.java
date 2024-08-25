@@ -31,7 +31,6 @@ public class WebSocketController {
         List<SubmitResponse> responses = problemService.submitProblem(submission);
         String responseJson = objectMapper.writeValueAsString(responses);
 
-        // Send the result to a specific topic or queue
         messagingTemplate.convertAndSend("/topic/submitResult", responseJson);
     }
 
@@ -41,7 +40,6 @@ public class WebSocketController {
         List<SubmitResponse> responses = problemService.runProblemOnPublicTests(submission);
         String responseJson = objectMapper.writeValueAsString(responses);
 
-        // Send the result to a specific topic or queue
         messagingTemplate.convertAndSend("/topic/runResult", responseJson);
     }
 }
