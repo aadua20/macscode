@@ -59,6 +59,7 @@ public class ProblemService {
         problemDto.setPublicTestCases(publicTests.stream()
                 .map(singleTest -> TestDto.builder()
                         .input(singleTest.getInput())
+                        .expectedOutput(singleTest.getOutput())
                         .testNum(singleTest.getTestNum())
                         .build())
                 .toList()

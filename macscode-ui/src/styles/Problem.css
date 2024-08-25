@@ -19,7 +19,8 @@
 }
 
 .problem-right-upper {
-    flex: 1;
+    flex: 0 0 55%;
+    /*flex: 1;*/
     background-color: #252525; /* Adjust as needed */
     padding: 20px;
     box-sizing: border-box;
@@ -27,6 +28,7 @@
 }
 
 .problem-right-lower {
+    flex: 0 0 45%;
     background-color: #252525; /* Adjust as needed */
     padding: 20px;
     box-sizing: border-box;
@@ -81,6 +83,10 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    background-color: #252525; /* Match the dark theme */
+    color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .test-cases-tabs {
@@ -91,26 +97,40 @@
 .tab-button {
     flex: 1;
     padding: 10px;
-    background-color: #f1f1f1;
-    border: 1px solid #ddd;
+    background-color: #333333; /* Darker tab background */
+    border: 1px solid #444444;
     border-radius: 4px 4px 0 0;
     cursor: pointer;
     text-align: center;
+    color: #ffffff;
 }
 
 .tab-button.active {
-    background-color: #fff;
-    border-bottom: 1px solid #fff;
+    background-color: #444444; /* Highlight active tab */
+    border-bottom: 1px solid #444444;
     font-weight: bold;
 }
 
 .test-case-content {
-    background-color: #fff;
-    border: 1px solid #ddd;
+    background-color: #333333; /* Darker content background */
+    border: 1px solid #444444;
     border-top: none;
     padding: 10px;
     overflow: auto;
-    height: calc(100% - 50px); /* Adjust height if needed */
+    height: calc(100% - 50px);
+}
+
+.test-case-content h4, .test-case-content h5 {
+    margin: 0;
+    color: #ffffff; /* Light text color for headings */
+}
+
+.test-case-content pre {
+    background-color: #1e1e1e; /* Slightly lighter for code blocks */
+    padding: 10px;
+    border-radius: 4px;
+    overflow: auto;
+    white-space: pre-wrap; /* Wrap long lines */
 }
 
 .test-case-result {
