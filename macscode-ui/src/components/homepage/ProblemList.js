@@ -6,7 +6,7 @@ import '../../styles/Home.css';
 const ProblemList = ({ problems, getStatus }) => {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
-    const problemsPerPage = 5;
+    const problemsPerPage = 10;
 
     const statusIcons = {
         Done: <FaCheckCircle color="green" />,
