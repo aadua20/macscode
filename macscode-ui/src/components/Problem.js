@@ -5,6 +5,7 @@ import ProblemDetails from './ProblemDetails';
 import SolutionTemplate from './SolutionTemplate';
 import TestCases from './TestCases';
 import ResultsModal from './ResultsModal';
+import Submissions from './Submissions'
 import '../styles/Problem.css';
 import { Client } from '@stomp/stompjs';
 import TopBar from "./TopBar";
@@ -20,6 +21,7 @@ const Problem = () => {
     const [showResults, setShowResults] = useState(false);
     const [hasSubmitted, setHasSubmitted] = useState(false);
     const [responseReceived, setResponseReceived] = useState(false);
+    const [activeTab, setActiveTab] = useState('description'); // State to manage active tab
 
     const clientRef = useRef(null);
     const discussionRef = useRef(null); // Ref for the discussion section
@@ -138,7 +140,24 @@ const Problem = () => {
             <TopBar/>
             <div className="content-container">
                 <div className="problem-left">
-                    <ProblemDetails problem={problem}/>
+                    <div className="tab-buttons">
+                        <button
+                            className={`tab-button ${activeTab === 'description' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('description')}
+                        >
+                            Description
+                        </button>
+                        <button
+                            className={`tab-button ${activeTab === 'submissions' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('submissions')}
+                        >
+                            Submissions
+                        </button>
+                    </div>
+                    <div className="tab-content">
+                        {activeTab === 'description' && <ProblemDetails problem={problem} />}
+                        {activeTab === 'submissions' && <Submissions problemId={problem.id} />}
+                    </div>
                 </div>
                 <div className="problem-right">
                     <div className="problem-right-upper">

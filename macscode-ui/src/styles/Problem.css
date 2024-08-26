@@ -189,3 +189,16 @@
     transform: translateY(0);
 }
 
+.tab-buttons {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.tab-button.active {
+    background-color: #696969;
+    font-weight: bold;
+}
+
+.tab-content {
+    margin-top: 10px;
+}
