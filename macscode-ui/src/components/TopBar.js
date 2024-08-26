@@ -21,7 +21,7 @@ const TopBar = () => {
 
     const handleLogout = () => {
         setAuth(null);
-        localStorage.removeItem('token'); // Assuming the token is stored in localStorage
+        localStorage.removeItem('token');
         navigate('/login');
     };
 

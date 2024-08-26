@@ -21,10 +21,10 @@ const Problem = () => {
     const [showResults, setShowResults] = useState(false);
     const [hasSubmitted, setHasSubmitted] = useState(false);
     const [responseReceived, setResponseReceived] = useState(false);
-    const [activeTab, setActiveTab] = useState('description'); // State to manage active tab
+    const [activeTab, setActiveTab] = useState('description');
 
     const clientRef = useRef(null);
-    const discussionRef = useRef(null); // Ref for the discussion section
+    const discussionRef = useRef(null);
 
     useEffect(() => {
         clientRef.current = new Client({
