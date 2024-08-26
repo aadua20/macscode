@@ -42,10 +42,6 @@ const Problem = () => {
                     setShowResults(true);
                 });
             },
-            onStompError: (frame) => {
-                console.error('Broker reported error: ' + frame.headers['message']);
-                console.error('Additional details: ' + frame.body);
-            },
         });
 
         clientRef.current.activate();
@@ -80,6 +76,9 @@ const Problem = () => {
 
         clientRef.current.publish({
             destination: '/app/submitSolution',
+            headers: {
+                Authorization: 'Bearer hey',
+            },
             body: JSON.stringify({
                 problemId: problem.id,
                 solution: code,
@@ -94,6 +93,9 @@ const Problem = () => {
 
         clientRef.current.publish({
             destination: '/app/runSolution',
+            headers: {
+                Authorization: 'Bearer hey',
+            },
             body: JSON.stringify({
                 problemId: problem.id,
                 solution: code,
@@ -102,6 +104,7 @@ const Problem = () => {
         setHasSubmitted(true);
         setResponseReceived(false);
     };
+
 
     const handleCloseResults = () => {
         setShowResults(false);

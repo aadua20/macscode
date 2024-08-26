@@ -5,8 +5,14 @@ import com.freeuni.macs.model.SubmitRequest;
 import com.freeuni.macs.model.api.SubmitResponse;
 import com.freeuni.macs.service.ProblemService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.support.MessageHeaderAccessor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -26,7 +32,11 @@ public class WebSocketController {
     }
 
     @MessageMapping("/submitSolution")
-    public void submitSolution(String submissionJson) throws Exception {
+    public void submitSolution(String submissionJson,
+                               @Header("Authorization") String authorizationHeader,
+                               SimpMessageHeaderAccessor headerAccessor) throws Exception {
+        headerAccessor.getSessionAttributes().put("Authorization", authorizationHeader);
+
         SubmitRequest submission = objectMapper.readValue(submissionJson, SubmitRequest.class);
         List<SubmitResponse> responses = problemService.submitProblem(submission);
         String responseJson = objectMapper.writeValueAsString(responses);
