@@ -83,6 +83,8 @@ services:
     container_name: discussion-service
     build:
       context: ../discussion-service
+    ports:
+      - "8082:8082"
     depends_on:
       problems-db:
         condition: service_started
