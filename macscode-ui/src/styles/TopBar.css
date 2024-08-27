@@ -20,9 +20,9 @@
 }
 
 .logo img {
-    width: 80px;
+    width: 10vh;
     height: auto;
-    margin-right: 50px;
+    margin-right: 10vw;
     transition: transform 0.3s ease;
 }
 
@@ -39,7 +39,7 @@
     text-decoration: none;
     color: white;
     font-weight: 600;
-    font-size: 16px;
+    font-size: 2.5vh;
     padding: 10px;
     transition: background-color 0.3s ease, color 0.3s ease;
     border-radius: 5px;
@@ -53,17 +53,21 @@
 .user-actions {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 4vw;
 }
 
 .user-profile {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 1vw;
     text-decoration: none;
     color: white;
     font-weight: 600;
     transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.profile-icon {
+    height: 4vh;
 }
 
 .user-profile:hover .profile-icon {
@@ -72,7 +76,7 @@
 }
 
 .username {
-    font-size: 16px;
+    font-size: 2.5vh;
 }
 
 .logout-button {
@@ -80,7 +84,7 @@
     border: none;
     cursor: pointer;
     color: white;
-    font-size: 16px;
+    font-size: 3vh;
     display: flex;
     align-items: center;
     transition: color 0.3s ease, transform 0.3s ease;
@@ -89,32 +93,4 @@
 .logout-button:hover .logout-icon {
     color: #FFC107;
     transform: scale(1.05);
-}
-
-@media (max-width: 768px) {
-    .top-bar {
-        padding: 10px 15px;
-        flex-direction: column;
-        height: auto;
-    }
-
-    .logo {
-        margin-bottom: 10px;
-    }
-
-    .navigation {
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .logo img {
-        width: 35px;
-    }
-
-    .user-actions {
-        flex-direction: column;
-        align-items: center;
-        gap: 15px;
-    }
 }
