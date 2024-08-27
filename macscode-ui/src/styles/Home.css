@@ -1,6 +1,6 @@
 .container {
     font-family: 'Arial', sans-serif;
-    padding: 80px;
+    padding-top: 11vh;
     background-color: #252525;
     color: #ffffff;
     margin: 0 auto;
@@ -63,23 +63,6 @@
     padding: 0 10px;
 }
 
-.difficulty {
-    font-weight: bold;
-    color: #fff;
-}
-
-.difficulty.easy {
-    color: #4CAF50;
-}
-
-.difficulty.medium {
-    color: #FFC107;
-}
-
-.difficulty.hard {
-    color: #F44336;
-}
-
 .status-icon {
     display: flex;
     align-items: center;
@@ -97,13 +80,13 @@
 
 .banner {
     flex: 1 0 220px;
-    max-width: 220px;
-    height: 100px;
+    max-width: 230px;
+    height: 130px;
     margin: 5px;
     padding: 20px;
     border-radius: 10px;
     color: white;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
     text-align: center;
     background-size: cover;
@@ -269,4 +252,12 @@
 .search-container input[type="search"]::placeholder {
     color: #aaa;
     font-style: italic;
+}
+
+.problem-item {
+    cursor: pointer;
+}
+
+.problem-item:hover {
+    background-color: #3a3b3c;
 }

@@ -23,7 +23,12 @@ public class SecurityConfig {
             "/submissions/**",
             "/swagger-ui/**",
             "/v3/**",
-            "/actuator/**"
+            "/actuator/**",
+            "/v3/**",
+            "/stomp/**",
+            "/websocket-endpoint/**",
+            "/app/submitSolution",
+            "/app/runSolution"
     };
 
     @Bean

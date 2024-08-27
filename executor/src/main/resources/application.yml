@@ -5,8 +5,14 @@ spring:
         url: http://localhost:8087
   application:
     name: executor
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
 server:
-  port: 8085
+  port: 0
 
 management:
   endpoints:

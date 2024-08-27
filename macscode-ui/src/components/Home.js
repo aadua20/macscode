@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import '../styles/Home.css';
+import '../styles/Difficulty.css';
 import useFetchSubmissions from "./useFetchSubmissions";
 import TypeBanners from "./homepage/TypeBanners";
 import TopicsGrid from "./homepage/TopicsGrid";
@@ -9,7 +10,6 @@ import ProblemList from "./homepage/ProblemList";
 import TopBar from "./TopBar";
 
 const Home = () => {
-    // const {auth} = useContext(AuthContext);
     const [problems, setProblems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -56,7 +56,7 @@ const Home = () => {
     useEffect(() => {
         const fetchProblems = async () => {
             try {
-                const response = await fetch('http://localhost:8080/problems/all');
+                const response = await fetch('/problems-service/problems/all');
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
