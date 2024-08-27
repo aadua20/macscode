@@ -25,9 +25,15 @@ const Problem = () => {
     const discussionRef = useRef(null); // Ref for the discussion section
 
     useEffect(() => {
-        const isProduction = window.location.protocol === 'https:';
-        const protocol = isProduction ? 'wss://' : 'ws://';
-        const webSocketURL = `${protocol}${window.location.host}/problems-service/websocket-endpoint/websocket`;
+        let webSocketURL;
+        const isDevelopment = process.env.NODE_ENV === 'development';
+        // Not good thing to do but whatever. TODO: change this in the future
+        if (isDevelopment) {
+            webSocketURL = `ws://localhost:8080/websocket-endpoint/websocket`;
+        } else {
+            const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+            webSocketURL = `${protocol}${window.location.host}/problems-service/websocket-endpoint/websocket`;
+        }
 
         clientRef.current = new Client({
             brokerURL: webSocketURL,
