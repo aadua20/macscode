@@ -25,7 +25,6 @@ const Problem = () => {
     const discussionRef = useRef(null); // Ref for the discussion section
 
     useEffect(() => {
-        // Determine the WebSocket URL based on the environment
         const isProduction = window.location.protocol === 'https:';
         const protocol = isProduction ? 'wss://' : 'ws://';
         const webSocketURL = `${protocol}${window.location.host}/problems-service/websocket-endpoint/websocket`;
