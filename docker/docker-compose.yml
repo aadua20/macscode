@@ -6,13 +6,10 @@ services:
       context: ../macscode-ui
     ports:
       - "3000:3000"
-
-  macscode-dummy-back:
-    container_name: macscode-dummy
-    build:
-      context: ../macscode
-    ports:
-      - "8080:8080"
+    networks:
+      - macscode_network
+    env_file:
+      - .env
   problems-db:
     container_name: problems-db
     image: mongo:latest
@@ -113,9 +110,12 @@ services:
     container_name: macscode-admin
     ports:
       - "8087:8087"
+    networks:
+      - macscode_network
+    env_file:
+      - .env
 volumes:
   pgdata:
   rabbitmq_data:
 networks:
   macscode_network:
-    driver: bridge
