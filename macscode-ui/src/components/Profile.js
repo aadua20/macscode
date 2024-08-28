@@ -6,8 +6,8 @@ import {useNavigate} from 'react-router-dom';
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import {dracula} from 'react-syntax-highlighter/dist/esm/styles/prism';
 import '../styles/Profile.css';
-import homeIcon from '../icons/logo192.png';
 import '../styles/Loading.css';
+import TopBar from "./TopBar";
 
 const Profile = () => {
     const {auth} = useContext(AuthContext);
@@ -30,7 +30,7 @@ const Profile = () => {
                 const decodedToken = jwtDecode(auth);
                 const username = decodedToken.sub;
 
-                const userResponse = await axios.get(`http://localhost:8081/auth/users/${username}`, {
+                const userResponse = await axios.get(`/auth-service/auth/users/${username}`, {
                     headers: {
                         Authorization: `Bearer ${auth}`
                     }
@@ -39,7 +39,7 @@ const Profile = () => {
                 setUpdatedName(userResponse.data.name);
                 setUpdatedEmail(userResponse.data.email);
 
-                const submissionsResponse = await axios.get(`http://localhost:8080/submissions/users/${username}`, {
+                const submissionsResponse = await axios.get(`/problems-service/submissions/users/${username}`, {
                     headers: {
                         Authorization: `Bearer ${auth}`
                     }
@@ -86,8 +86,8 @@ const Profile = () => {
         }
     };
 
-    const handleProblemClick = (problemUrl) => {
-        navigate(`/problems/${problemUrl}`);
+    const handleProblemClick = (problem) => {
+        navigate(`/problem/${problem.problemId.course}/${problem.problemId.order}`);
     };
 
     const countAcceptedCodes = (type) => {
@@ -115,7 +115,7 @@ const Profile = () => {
             const decodedToken = jwtDecode(auth);
             const username = decodedToken.sub;
 
-            await axios.put(`http://localhost:8081/auth/users/update/${username}`, {
+            await axios.put(`/auth-service/auth/users/update/${username}`, {
                 name: updatedName,
                 email: updatedEmail,
             }, {
@@ -170,6 +170,7 @@ const Profile = () => {
 
     return (
         <div className="profile-page">
+            <TopBar/>
             <div className="profile-container">
                 <div className="profile-info-container">
                     <div className="profile-header">
@@ -232,7 +233,7 @@ const Profile = () => {
                             >
                                 <div
                                     className="problem-name"
-                                    onClick={() => handleProblemClick(submission.problem.name.replace(/ /g, '-'))}
+                                    onClick={() => handleProblemClick(submission.problem)}
                                     style={{cursor: 'pointer', color: '#ffb700'}}
                                 >
                                     {submission.problem.name}
@@ -268,12 +269,6 @@ const Profile = () => {
                     </div>
                 </div>
             </div>
-            <img
-                src={homeIcon}
-                alt="Home"
-                className="home-button"
-                onClick={() => navigate('/')}
-            />
             {showCode && (
                 <div className="code-popup">
                     <div className="code-popup-content">

@@ -1,0 +1,24 @@
+spring:
+  boot:
+    admin:
+      client:
+        url: http://localhost:8087
+  application:
+    name: executor
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+server:
+  port: 0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

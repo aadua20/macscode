@@ -1,4 +1,8 @@
 spring:
+  boot:
+    admin:
+      client:
+        url: http://localhost:8087
   application:
     name: problems
   data:
@@ -6,9 +10,21 @@ spring:
       database: problems-db
       host: localhost
       port: 9100
-execution:
-  service:
-    url: http://localhost:8085
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
 jwt:
   secret: macscodesecretkeymacscodesecretkeymacscodesecretkeymacscodese
   expiration-time: 1209600000  # 2 weeks
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
