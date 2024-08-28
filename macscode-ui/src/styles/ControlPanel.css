@@ -128,7 +128,15 @@
     color: black;
 }
 
-.delete-button {
+.control-panel-user-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.delete-button, .make-admin-button {
     background-color: red;
     color: white;
     border: none;
@@ -141,4 +149,19 @@
 .delete-button:hover {
     background-color: darkred;
 }
+
+.make-admin-button {
+    background-color: gold;
+    color: black;
+    margin-right: 3vw;
+}
+
+.make-admin-button:hover {
+    background-color: goldenrod;
+}
+
+.control-panel-user-item {
+    cursor: pointer;
+}
+
 

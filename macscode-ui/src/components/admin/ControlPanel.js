@@ -16,10 +16,22 @@ const ControlPanel = () => {
     const [sortConfig, setSortConfig] = useState({ key: 'title', direction: 'asc' });
     const [currentPage, setCurrentPage] = useState(1);
     const problemsPerPage = 10;
+    const [confirmAction, setConfirmAction] = useState(null);
     const navigate = useNavigate();
 
     const fetchUsers = async () => {
-        // Logic to fetch users
+        try {
+            const response = await axios.get('/auth/users/all', {
+                headers: {
+                    Authorization: `Bearer ${auth}`
+                }
+            });
+            setUsers(response.data);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const fetchProblems = useCallback(async () => {
@@ -77,16 +89,7 @@ const ControlPanel = () => {
         navigate(`/problem/${problem.problemId.course}/${problem.problemId.order}`);
     };
 
-    const indexOfLastProblem = currentPage * problemsPerPage;
-    const indexOfFirstProblem = indexOfLastProblem - problemsPerPage;
-    const currentProblems = filteredResults.slice(indexOfFirstProblem, indexOfLastProblem);
-    const totalPages = Math.ceil(filteredResults.length / problemsPerPage);
-
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    };
-
-    const handleDelete = async (problemId) => {
+    const handleDeleteProblem = async (problemId) => {
         try {
             await axios.delete(`/problems-service/problems/${problemId}`, {
                 headers: {
@@ -100,11 +103,58 @@ const ControlPanel = () => {
         }
     };
 
-    const confirmDelete = (problemId) => {
+    const confirmDeleteProblem = (problemId) => {
         if (window.confirm("Are you sure you want to delete this problem?")) {
-            handleDelete(problemId);
+            handleDeleteProblem(problemId);
         }
     };
+
+    const handleDeleteUser = async (username) => {
+        try {
+            await axios.delete(`/auth/${username}`, {
+                headers: {
+                    Authorization: `Bearer ${auth}`
+                }
+            });
+            setUsers(users.filter(user => user.username !== username));
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
+    const confirmDeleteUser = (username) => {
+        if (window.confirm("Are you sure you want to delete this user?")) {
+            handleDeleteUser(username);
+        }
+    };
+
+    const handleMakeAdmin = async (username) => {
+        try {
+            await axios.patch(`/auth/${username}/make-admin`, {}, {
+                headers: {
+                    Authorization: `Bearer ${auth}`
+                }
+            });
+            fetchUsers();
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
+    const confirmMakeAdmin = (username) => {
+        if (window.confirm("Are you sure you want to make this user Admin?")) {
+            handleMakeAdmin(username)
+        }
+    };
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const indexOfLastProblem = currentPage * problemsPerPage;
+    const indexOfFirstProblem = indexOfLastProblem - problemsPerPage;
+    const currentProblems = filteredResults.slice(indexOfFirstProblem, indexOfLastProblem);
+    const totalPages = Math.ceil(filteredResults.length / problemsPerPage);
 
     const renderContent = () => {
         if (isLoading) return <p>Loading...</p>;
@@ -116,8 +166,32 @@ const ControlPanel = () => {
                     <h3>User List</h3>
                     <ul className="control-panel-user-list">
                         {users.map(user => (
-                            <li key={user.id} className="control-panel-user-item">
-                                {user.username}
+                            <li
+                                key={user.username}
+                                className="control-panel-user-item"
+                                onClick={() => navigate(`/profile/${user.username}`)}
+                            >
+                                <span>{user.username}</span>
+                                <div className="control-panel-user-actions">
+                                    <button
+                                        className="make-admin-button"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            confirmMakeAdmin(user.username);
+                                        }}
+                                    >
+                                        Make Admin
+                                    </button>
+                                    <button
+                                        className="delete-button"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            confirmDeleteUser(user.username);
+                                        }}
+                                    >
+                                        Delete
+                                    </button>
+                                </div>
                             </li>
                         ))}
                     </ul>
@@ -140,7 +214,7 @@ const ControlPanel = () => {
                                     className="delete-button"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        confirmDelete(problem.id);
+                                        confirmDeleteProblem(problem.id);
                                     }}
                                 >
                                     Delete
@@ -186,6 +260,26 @@ const ControlPanel = () => {
             <div className="control-panel-content-container">
                 {renderContent()}
             </div>
+            {confirmAction && (
+                <div className="confirmation-popup">
+                    <p>Are you sure you want to make this user an admin?</p>
+                    <button
+                        className="confirm-button"
+                        onClick={() => {
+                            confirmAction();
+                            setConfirmAction(null);
+                        }}
+                    >
+                        Yes
+                    </button>
+                    <button
+                        className="cancel-button"
+                        onClick={() => setConfirmAction(null)}
+                    >
+                        No
+                    </button>
+                </div>
+            )}
         </div>
     );
 };
