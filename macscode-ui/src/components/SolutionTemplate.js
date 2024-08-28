@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-java';
+import 'ace-builds/src-noconflict/mode-c_cpp';
 import 'ace-builds/src-noconflict/theme-monokai';
 import 'ace-builds/src-noconflict/ext-language_tools';
 import '../styles/SolutionTemplate.css';
 
-const SolutionTemplate = ({ solutionFileTemplate, onChange }) => {
+const SolutionTemplate = ({ solutionFileTemplate, onChange, problemType }) => {
     const [code, setCode] = useState(solutionFileTemplate);
 
     const handleChange = (newCode) => {
@@ -15,10 +16,11 @@ const SolutionTemplate = ({ solutionFileTemplate, onChange }) => {
         }
     };
 
+    const language = problemType === 'CPP' ? 'c_cpp' : 'java';
     return (
         <div className="solution-template">
             <AceEditor
-                mode="java"
+                mode={language}
                 theme="monokai"
                 name="editor"
                 value={code}

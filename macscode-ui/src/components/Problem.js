@@ -155,7 +155,6 @@ const Problem = () => {
     if (!problem) {
         return <div>Loading...</div>;
     }
-
     return (
         <div className="problem-container">
             <TopBar />
@@ -185,6 +184,7 @@ const Problem = () => {
                         <SolutionTemplate
                             solutionFileTemplate={code}
                             onChange={handleCodeChange}
+                            problemType={problem.type}
                         />
                         <div className="button-container">
                             <button
