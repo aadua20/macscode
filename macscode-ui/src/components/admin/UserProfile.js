@@ -1,13 +1,13 @@
 import React, {useContext, useEffect, useState} from 'react';
 import axios from 'axios';
-import {AuthContext} from '../AuthContext';
+import {AuthContext} from '../../AuthContext';
 import {jwtDecode} from 'jwt-decode';
 import {useNavigate, useParams} from 'react-router-dom';
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import {dracula} from 'react-syntax-highlighter/dist/esm/styles/prism';
-import '../styles/Profile.css';
-import '../styles/Loading.css';
-import TopBar from "./TopBar";
+import '../../styles/Profile.css';
+import '../../styles/Loading.css';
+import TopBar from "../TopBar";
 
 const UserProfile = () => {
     const { auth } = useContext(AuthContext);

@@ -1,0 +1,50 @@
+.control-panel-container {
+    display: flex;
+    flex-direction: column;
+    background-color: #f5f5f5;
+    padding: 20px;
+}
+
+.control-panel-tabs-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.control-panel-tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+    background-color: #fff;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.control-panel-tab:hover {
+    background-color: #e0e0e0;
+}
+
+.control-panel-active {
+    background-color: #ffd700;
+}
+
+.control-panel-content-container {
+    background-color: #ffffff;
+    border-radius: 4px;
+    padding: 20px;
+}
+
+.control-panel-user-list {
+    list-style: none;
+    padding: 0;
+}
+
+.control-panel-user-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.control-panel-user-item:last-child {
+    border-bottom: none;
+}

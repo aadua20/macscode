@@ -8,7 +8,8 @@ import Profile from "./components/Profile";
 import Problem from "./components/Problem";
 import NotFound from "./components/NotFound";
 import BlockedRoute from "./components/routes/BlockedRoute";
-import UserProfile from "./components/UserProfile";
+import UserProfile from "./components/admin/UserProfile";
+import ControlPanel from "./components/admin/ControlPanel";
 
 const AppRoutes = () => {
     return (
@@ -40,6 +41,14 @@ const AppRoutes = () => {
                 element={
                     <BlockedRoute requiredRole="ADMIN">
                         <UserProfile />
+                    </BlockedRoute>
+                }
+            />
+            <Route
+                path="/control-panel"
+                element={
+                    <BlockedRoute requiredRole="ADMIN">
+                        <ControlPanel />
                     </BlockedRoute>
                 }
             />

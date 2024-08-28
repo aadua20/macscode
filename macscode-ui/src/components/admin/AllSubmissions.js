@@ -1,9 +1,9 @@
 import React, {useEffect, useState, useContext} from 'react';
 import axios from 'axios';
-import {AuthContext} from '../AuthContext';
+import {AuthContext} from '../../AuthContext';
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import {dracula} from 'react-syntax-highlighter/dist/esm/styles/prism';
-import '../styles/Submissions.css';
+import '../../styles/Submissions.css';
 import {useNavigate} from "react-router-dom";
 
 const AllSubmissions = ({problemId}) => {

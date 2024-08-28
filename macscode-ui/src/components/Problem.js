@@ -12,7 +12,7 @@ import TopBar from './TopBar';
 import Comments from './Comments';
 import {v4 as uuidv4} from 'uuid';
 import {jwtDecode} from 'jwt-decode';
-import AllSubmissions from "./AllSubmissions";
+import AllSubmissions from "./admin/AllSubmissions";
 
 const Problem = () => {
     const {course, order} = useParams();

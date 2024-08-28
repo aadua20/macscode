@@ -6,8 +6,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -60,10 +58,6 @@ public class JwtService {
 
     public String generateToken(UserDetails userDetails) {
         HashMap<String, Object> claims = new HashMap<>();
-        System.out.println(userDetails.getAuthorities().size());
-        for (GrantedAuthority g : userDetails.getAuthorities()) {
-            System.out.println(g.getAuthority());
-        }
         claims.put("role", userDetails.getAuthorities().stream()
                 .findFirst().orElseThrow(() -> new RuntimeException("Role not found")).getAuthority());
         return generateToken(claims, userDetails);
