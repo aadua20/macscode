@@ -1,12 +1,12 @@
-import React, {useState, useEffect, useCallback, useContext} from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import axios from 'axios';
 import '../../styles/ControlPanel.css';
 import TopBar from '../TopBar';
-import ProblemList from '../homepage/ProblemList';
-import {AuthContext} from "../../AuthContext";
+import { AuthContext } from "../../AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const ControlPanel = () => {
-    const {auth} = useContext(AuthContext);
+    const { auth } = useContext(AuthContext);
     const [activeTab, setActiveTab] = useState('manage-users');
     const [users, setUsers] = useState([]);
     const [problems, setProblems] = useState([]);
@@ -14,16 +14,12 @@ const ControlPanel = () => {
     const [error, setError] = useState(null);
     const [filteredResults, setFilteredResults] = useState([]);
     const [sortConfig, setSortConfig] = useState({ key: 'title', direction: 'asc' });
+    const [currentPage, setCurrentPage] = useState(1);
+    const problemsPerPage = 10;
+    const navigate = useNavigate();
 
     const fetchUsers = async () => {
-        try {
-            const response = await axios.get('/problems-service/users/all');
-            setUsers(response.data);
-        } catch (err) {
-            setError(err.message);
-        } finally {
-            setIsLoading(false);
-        }
+        // Logic to fetch users
     };
 
     const fetchProblems = useCallback(async () => {
@@ -44,7 +40,7 @@ const ControlPanel = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [sortConfig]);
+    }, [sortConfig, auth]);
 
     const sortProblems = useCallback((problems, { key, direction }) => {
         const difficultyOrder = { 'easy': 1, 'medium': 2, 'hard': 3 };
@@ -77,10 +73,42 @@ const ControlPanel = () => {
         }
     }, [activeTab, fetchProblems]);
 
+    const handleProblemClick = (problem) => {
+        navigate(`/problem/${problem.problemId.course}/${problem.problemId.order}`);
+    };
+
+    const indexOfLastProblem = currentPage * problemsPerPage;
+    const indexOfFirstProblem = indexOfLastProblem - problemsPerPage;
+    const currentProblems = filteredResults.slice(indexOfFirstProblem, indexOfLastProblem);
+    const totalPages = Math.ceil(filteredResults.length / problemsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const handleDelete = async (problemId) => {
+        try {
+            await axios.delete(`/problems-service/problems/${problemId}`, {
+                headers: {
+                    Authorization: `Bearer ${auth}`
+                }
+            });
+            setProblems(problems.filter(problem => problem.id !== problemId));
+            setFilteredResults(filteredResults.filter(problem => problem.id !== problemId));
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
+    const confirmDelete = (problemId) => {
+        if (window.confirm("Are you sure you want to delete this problem?")) {
+            handleDelete(problemId);
+        }
+    };
+
     const renderContent = () => {
         if (isLoading) return <p>Loading...</p>;
         if (error) return <p>Error: {error}</p>;
-        console.log(filteredResults);
 
         if (activeTab === 'manage-users') {
             return (
@@ -99,7 +127,40 @@ const ControlPanel = () => {
             return (
                 <div>
                     <h3>Problem List</h3>
-                    <ProblemList problems={filteredResults} />
+                    <ul className="problem-list">
+                        {currentProblems.map((problem) => (
+                            <li key={problem.id} className="problem-item" onClick={() => handleProblemClick(problem)}>
+                                <span className="column title">{problem.problemId.order}. {problem.name}</span>
+                                <span className="column type">{problem.type}</span>
+                                <span className={`column difficulty ${problem.difficulty.toLowerCase()}`}>
+                                    {problem.difficulty}
+                                </span>
+                                <span className="column topics">{problem.topics.join(', ')}</span>
+                                <button
+                                    className="delete-button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        confirmDelete(problem.id);
+                                    }}
+                                >
+                                    Delete
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                    {totalPages > 1 && (
+                        <div className="pagination">
+                            {Array.from({ length: totalPages }, (_, index) => (
+                                <button
+                                    key={index + 1}
+                                    className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}
+                                    onClick={() => handlePageChange(index + 1)}
+                                >
+                                    {index + 1}
+                                </button>
+                            ))}
+                        </div>
+                    )}
                 </div>
             );
         }
