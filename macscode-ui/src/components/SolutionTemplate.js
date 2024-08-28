@@ -35,7 +35,7 @@ const SolutionTemplate = ({ solutionFileTemplate, onChange, problemType }) => {
                     tabSize: 4
                 }}
                 width="100%"
-                height="400px"
+                height="100%"
             />
         </div>
     );
