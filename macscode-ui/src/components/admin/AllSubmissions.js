@@ -76,36 +76,34 @@ const AllSubmissions = ({problemId}) => {
         <div className="submissions-page">
             <div className="submissions-container">
                 <h3>Submissions</h3>
-                <div className="submissions-list">
-                    {currentSubmissions.map(submission => (
-                        <div className="submission-item" key={submission.id.toString()}>
-                            <div
-                                className="submitter-username"
-                                onClick={() => handleUsernameClick(submission.submitterUsername)}
-                            >
-                                {submission.submitterUsername}
+                {submissions.length === 0 ? (
+                    <p className="no-submissions-message">There are No Submissions on This Problem</p>
+                ) : (
+                    <div className="submissions-list">
+                        {currentSubmissions.map(submission => (
+                            <div className="submission-item" key={submission.id.toString()}>
+                                <div className={`result ${submission.result === 'ACCEPTED' ? 'accepted' : 'rejected'}`}>
+                                    {submission.result}
+                                </div>
+                                <div className="date">
+                                    {new Date(submission.submissionDate).toLocaleString('en-US', {
+                                        dateStyle: 'short',
+                                        timeStyle: 'short'
+                                    })}
+                                </div>
+                                <button
+                                    className="view-code-button"
+                                    onClick={() => handleCodeClick(submission.solutionFileContent, "java")}
+                                >
+                                    View Code
+                                </button>
                             </div>
-                            <div className={`result ${submission.result === 'ACCEPTED' ? 'accepted' : 'rejected'}`}>
-                                {submission.result}
-                            </div>
-                            <div className="date">
-                                {new Date(submission.submissionDate).toLocaleString('en-US', {
-                                    dateStyle: 'short',
-                                    timeStyle: 'short'
-                                })}
-                            </div>
-                            <button
-                                className="view-code-button"
-                                onClick={() => handleCodeClick(submission.solutionFileContent, 'java')}
-                            >
-                                View Code
-                            </button>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                )}
                 {totalPages > 1 && (
                     <div className="pagination">
-                        {Array.from({length: totalPages}, (_, index) => (
+                        {Array.from({ length: totalPages }, (_, index) => (
                             <button
                                 key={index + 1}
                                 className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}

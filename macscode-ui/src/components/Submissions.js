@@ -1,13 +1,13 @@
-import React, {useEffect, useState, useContext} from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-import {AuthContext} from '../AuthContext';
-import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
-import {dracula} from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { AuthContext } from '../AuthContext';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import '../styles/Submissions.css';
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
-const Submissions = ({problemId}) => {
-    const {auth} = useContext(AuthContext);
+const Submissions = ({ problemId }) => {
+    const { auth } = useContext(AuthContext);
     const [submissions, setSubmissions] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedCode, setSelectedCode] = useState(null);
@@ -34,7 +34,7 @@ const Submissions = ({problemId}) => {
         if (auth) {
             fetchSubmissions();
         }
-    }, [auth]);
+    }, [auth, problemId]);
 
     const handleCodeClick = (solutionFileContent, language) => {
         setSelectedCode(solutionFileContent);
@@ -73,30 +73,34 @@ const Submissions = ({problemId}) => {
         <div className="submissions-page">
             <div className="submissions-container">
                 <h3>Submissions</h3>
-                <div className="submissions-list">
-                    {currentSubmissions.map(submission => (
-                        <div className="submission-item" key={submission.id.toString()}>
-                            <div className={`result ${submission.result === 'ACCEPTED' ? 'accepted' : 'rejected'}`}>
-                                {submission.result}
+                {submissions.length === 0 ? (
+                    <p className="no-submissions-message">You Have No Submissions on This Problem</p>
+                ) : (
+                    <div className="submissions-list">
+                        {currentSubmissions.map(submission => (
+                            <div className="submission-item" key={submission.id.toString()}>
+                                <div className={`result ${submission.result === 'ACCEPTED' ? 'accepted' : 'rejected'}`}>
+                                    {submission.result}
+                                </div>
+                                <div className="date">
+                                    {new Date(submission.submissionDate).toLocaleString('en-US', {
+                                        dateStyle: 'short',
+                                        timeStyle: 'short'
+                                    })}
+                                </div>
+                                <button
+                                    className="view-code-button"
+                                    onClick={() => handleCodeClick(submission.solutionFileContent, "java")}
+                                >
+                                    View Code
+                                </button>
                             </div>
-                            <div className="date">
-                                {new Date(submission.submissionDate).toLocaleString('en-US', {
-                                    dateStyle: 'short',
-                                    timeStyle: 'short'
-                                })}
-                            </div>
-                            <button
-                                className="view-code-button"
-                                onClick={() => handleCodeClick(submission.solutionFileContent, "java")}
-                            >
-                                View Code
-                            </button>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                )}
                 {totalPages > 1 && (
                     <div className="pagination">
-                        {Array.from({length: totalPages}, (_, index) => (
+                        {Array.from({ length: totalPages }, (_, index) => (
                             <button
                                 key={index + 1}
                                 className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}

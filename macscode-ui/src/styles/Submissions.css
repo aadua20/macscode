@@ -93,3 +93,10 @@
     max-height: 80%;
     overflow-y: auto;
 }
+
+.no-submissions-message {
+    color: red;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.2em;
+}
