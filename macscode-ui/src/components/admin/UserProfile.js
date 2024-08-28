@@ -110,9 +110,6 @@ const UserProfile = () => {
 
     const handleSaveClick = async () => {
         try {
-            const decodedToken = jwtDecode(auth);
-            const username = decodedToken.sub;
-
             await axios.put(`/auth-service/auth/users/update/${username}`, {
                 name: updatedName,
                 email: updatedEmail,
