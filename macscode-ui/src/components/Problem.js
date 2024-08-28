@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import React, {useState, useEffect, useRef} from 'react';
+import {useParams} from 'react-router-dom';
 import axios from 'axios';
 import ProblemDetails from './ProblemDetails';
 import SolutionTemplate from './SolutionTemplate';
@@ -7,13 +7,15 @@ import TestCases from './TestCases';
 import ResultsModal from './ResultsModal';
 import Submissions from './Submissions';
 import '../styles/Problem.css';
-import { Client } from '@stomp/stompjs';
+import {Client} from '@stomp/stompjs';
 import TopBar from './TopBar';
 import Comments from './Comments';
 import {v4 as uuidv4} from 'uuid';
+import {jwtDecode} from 'jwt-decode';
+import AllSubmissions from "./AllSubmissions";
 
 const Problem = () => {
-    const { course, order } = useParams();
+    const {course, order} = useParams();
     const [problem, setProblem] = useState(null);
     const [error, setError] = useState('');
     const [code, setCode] = useState('');
@@ -25,9 +27,18 @@ const Problem = () => {
     const [hasSubmitted, setHasSubmitted] = useState(false);
     const [responseReceived, setResponseReceived] = useState(false);
     const [activeTab, setActiveTab] = useState('description');
+    const [userRole, setUserRole] = useState('');
 
     const clientRef = useRef(null);
     const discussionRef = useRef(null);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const decodedToken = jwtDecode(token);
+            setUserRole(decodedToken.role);
+        }
+    }, []);
 
     useEffect(() => {
         let webSocketURL;
@@ -158,7 +169,7 @@ const Problem = () => {
 
     return (
         <div className="problem-container">
-            <TopBar />
+            <TopBar/>
             <div className="content-container">
                 <div className="problem-left">
                     <div className="tab-buttons">
@@ -174,10 +185,19 @@ const Problem = () => {
                         >
                             Submissions
                         </button>
+                        {userRole === 'ADMIN' && (
+                            <button
+                                className={`tab-button ${activeTab === 'all-submissions' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('all-submissions')}
+                            >
+                                All Submissions
+                            </button>
+                        )}
                     </div>
                     <div className="tab-content">
-                        {activeTab === 'description' && <ProblemDetails problem={problem} />}
-                        {activeTab === 'submissions' && <Submissions problemId={problem.id} />}
+                        {activeTab === 'description' && <ProblemDetails problem={problem}/>}
+                        {activeTab === 'submissions' && <Submissions problemId={problem.id}/>}
+                        {activeTab === 'all-submissions' && userRole === 'ADMIN' && <AllSubmissions problemId={problem.id}/>}
                     </div>
                 </div>
                 <div className="problem-right">
@@ -191,7 +211,10 @@ const Problem = () => {
                                 className="run-button"
                                 onClick={handleRun}
                                 disabled={isRunning || isSubmitting}
-                                style={{ opacity: isRunning || isSubmitting ? 0.5 : 1, cursor: isRunning || isSubmitting ? 'not-allowed' : 'pointer' }}
+                                style={{
+                                    opacity: isRunning || isSubmitting ? 0.5 : 1,
+                                    cursor: isRunning || isSubmitting ? 'not-allowed' : 'pointer'
+                                }}
                             >
                                 {isRunning ? <div className="loading-spinner"></div> : 'Run'}
                             </button>
@@ -199,7 +222,10 @@ const Problem = () => {
                                 className="submit-button"
                                 onClick={handleSubmit}
                                 disabled={isSubmitting || isRunning}
-                                style={{ opacity: isSubmitting || isRunning ? 0.5 : 1, cursor: isSubmitting || isRunning ? 'not-allowed' : 'pointer' }}
+                                style={{
+                                    opacity: isSubmitting || isRunning ? 0.5 : 1,
+                                    cursor: isSubmitting || isRunning ? 'not-allowed' : 'pointer'
+                                }}
                             >
                                 {isSubmitting ? <div className="loading-spinner"></div> : 'Submit'}
                             </button>
@@ -212,21 +238,21 @@ const Problem = () => {
                         </div>
                     </div>
                     <div className="problem-right-lower">
-                        <TestCases testCases={testCases} />
+                        <TestCases testCases={testCases}/>
                     </div>
                 </div>
             </div>
             <button className="scroll-button" onClick={scrollToDiscussion}>
                 Go to Comments
             </button>
-            <br />
+            <br/>
             <ResultsModal
                 show={showResults}
                 results={results}
                 onClose={handleCloseResults}
             />
             <div ref={discussionRef} className="discussion-section">
-                <Comments problemId={problem.id} />
+                <Comments problemId={problem.id}/>
             </div>
         </div>
     );
