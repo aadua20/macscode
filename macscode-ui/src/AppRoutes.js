@@ -7,6 +7,8 @@ import PrivateRoute from './components/routes/PrivateRoute';
 import Profile from "./components/Profile";
 import Problem from "./components/Problem";
 import NotFound from "./components/NotFound";
+import BlockedRoute from "./components/routes/BlockedRoute";
+import UserProfile from "./components/UserProfile";
 
 const AppRoutes = () => {
     return (
@@ -31,6 +33,14 @@ const AppRoutes = () => {
                     <PrivateRoute>
                         <Problem />
                     </PrivateRoute>
+                }
+            />
+            <Route
+                path="/profile/:username"
+                element={
+                    <BlockedRoute requiredRole="ADMIN">
+                        <UserProfile />
+                    </BlockedRoute>
                 }
             />
             <Route path="*" element={<NotFound />} />

@@ -4,6 +4,7 @@ import {AuthContext} from '../AuthContext';
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import {dracula} from 'react-syntax-highlighter/dist/esm/styles/prism';
 import '../styles/Submissions.css';
+import {useNavigate} from "react-router-dom";
 
 const AllSubmissions = ({problemId}) => {
     const {auth} = useContext(AuthContext);
@@ -13,6 +14,7 @@ const AllSubmissions = ({problemId}) => {
     const [selectedLanguage, setSelectedLanguage] = useState('java');
     const [showCode, setShowCode] = useState(false);
     const submissionsPerPage = 10;
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchSubmissions = async () => {
@@ -40,7 +42,7 @@ const AllSubmissions = ({problemId}) => {
     };
 
     const handleUsernameClick = (username) => {
-        console.log(username)
+        navigate(`/profile/${username}`)
     };
 
     const handlePageChange = (pageNumber) => {
