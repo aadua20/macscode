@@ -237,17 +237,19 @@ const Problem = () => {
                             >
                                 {isSubmitting ? <div className="loading-spinner"></div> : 'Submit'}
                             </button>
-                            <button
-                                className="show-demo-button"
-                                onClick={handleShowDemo}
-                                disabled={isRunning || isSubmitting}
-                                style={{
-                                    opacity: isRunning || isSubmitting ? 0.5 : 1,
-                                    cursor: isRunning || isSubmitting ? 'not-allowed' : 'pointer',
-                                }}
-                            >
-                                Demo
-                            </button>
+                            {problem.type === 'KAREL' && (
+                                <button
+                                    className="show-demo-button"
+                                    onClick={handleShowDemo}
+                                    disabled={isRunning || isSubmitting}
+                                    style={{
+                                        opacity: isRunning || isSubmitting ? 0.5 : 1,
+                                        cursor: isRunning || isSubmitting ? 'not-allowed' : 'pointer',
+                                    }}
+                                >
+                                    Demo
+                                </button>
+                            )}
 
                             <button
                                 className={`view-results-button ${hasSubmitted && responseReceived ? 'visible' : ''}`}
