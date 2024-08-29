@@ -82,6 +82,12 @@ const AllSubmissions = ({problemId}) => {
                     <div className="submissions-list">
                         {currentSubmissions.map(submission => (
                             <div className="submission-item" key={submission.id.toString()}>
+                                <div
+                                    className="submitter-username"
+                                    onClick={() => handleUsernameClick(submission.submitterUsername)}
+                                >
+                                    {submission.submitterUsername}
+                                </div>
                                 <div className={`result ${submission.result === 'ACCEPTED' ? 'accepted' : 'rejected'}`}>
                                     {submission.result}
                                 </div>
