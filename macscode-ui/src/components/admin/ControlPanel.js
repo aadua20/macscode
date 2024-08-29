@@ -64,14 +64,12 @@ const ControlPanel = () => {
 
     useEffect(() => {
         if (activeTab === 'manage-users') {
-            setFilteredUsers(
-                users.filter(user => user.username.toLowerCase().includes(searchTerm.toLowerCase()))
-            );
+            const filtered = users.filter(user => user.username.toLowerCase().includes(searchTerm.toLowerCase()));
+            setFilteredUsers(filtered.sort((a, b) => a.username.localeCompare(b.username)));
             setCurrentPage(1);
         } else if (activeTab === 'manage-problems') {
-            setFilteredProblems(
-                problems.filter(problem => problem.name.toLowerCase().includes(searchTerm.toLowerCase()))
-            );
+            const filtered = problems.filter(problem => problem.name.toLowerCase().includes(searchTerm.toLowerCase()));
+            setFilteredProblems(filtered.sort((a, b) => a.name.localeCompare(b.name)));
             setCurrentPage(1);
         }
     }, [searchTerm, activeTab, users, problems]);
@@ -177,15 +175,18 @@ const ControlPanel = () => {
                             >
                                 <span>{user.username}</span>
                                 <div className="control-panel-user-actions">
-                                    <button
-                                        className="make-admin-button"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            confirmMakeAdmin(user.username);
-                                        }}
-                                    >
-                                        Make Admin
-                                    </button>
+                                    {!(user.role === "ADMIN") && (
+                                        <button
+                                            className="make-admin-button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                confirmMakeAdmin(user.username);
+                                            }}
+                                        >
+                                            Make Admin
+                                        </button>
+                                    )}
+                                    {user.role === "ADMIN" && <span className="admin-star">⭐</span>}
                                     <button
                                         className="delete-button"
                                         onClick={(e) => {
