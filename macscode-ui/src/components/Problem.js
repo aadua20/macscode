@@ -212,6 +212,9 @@ const Problem = () => {
                         {activeTab === 'all-submissions' && userRole === 'ADMIN' &&
                             <AllSubmissions problemId={problem.id}/>}
                     </div>
+                    <button className="scroll-button" onClick={scrollToDiscussion}>
+                        Go to Comments
+                    </button>
                 </div>
                 <div className="problem-right">
                     <div className="problem-right-upper">
@@ -269,9 +272,6 @@ const Problem = () => {
                     </div>
                 </div>
             </div>
-            <button className="scroll-button" onClick={scrollToDiscussion}>
-                Go to Comments
-            </button>
             <br/>
             <ResultsModal
                 show={showResults}

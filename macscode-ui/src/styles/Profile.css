@@ -50,6 +50,21 @@ body {
     color: #b0b0b0;
 }
 
+.profile-header-info {
+    text-align: left;
+}
+
+.profile-header-info h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #ffffff;
+}
+
+.profile-header-info p {
+    margin: 10px 0 15px 0;
+    color: rgba(255, 255, 255, 0.67);
+}
+
 .home-button {
     position: fixed;
     top: 20px;
@@ -203,10 +218,12 @@ pre {
 }
 
 .profile-header button {
+    width: 100%;
     background-color: orange;
     color: #fff;
     border: none;
-    padding: 10px;
+    padding: 8px;
+    font-weight: bold;
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
@@ -214,5 +231,7 @@ pre {
 }
 
 .profile-header button:hover {
-    background-color: #cbb111;
+    color: orange;
+    font-weight: bold;
+    background-color: #ffffff;
 }
