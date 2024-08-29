@@ -216,15 +216,6 @@ const Problem = () => {
                         )}
                     </div>
                     <div className="tab-content">
-                        {activeTab === 'description' && (
-                            <ProblemDetails
-                                problem={problem}
-                                selectedTestCase={selectedTestCase}
-                                results={results}
-                                isDemo={isDemo}
-                            />
-                        )}
-                        {activeTab === 'submissions' && <Submissions problemId={problem.id} />}
                         {activeTab === 'description' && <ProblemDetails problem={problem}/>}
                         {activeTab === 'submissions' && <Submissions problemId={problem.id}/>}
                         {activeTab === 'all-submissions' && userRole === 'ADMIN' && <AllSubmissions problemId={problem.id}/>}
