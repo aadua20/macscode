@@ -75,32 +75,6 @@
     margin: 0;
 }
 
-.problem-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #ddd;
-    transition: background-color 0.3s;
-}
-
-.problem-item:last-child {
-    border-bottom: none;
-}
-
-.problem-item:hover {
-    background-color: #3a3a3a;
-}
-
-.column {
-    flex: 1;
-    padding: 0 10px;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .pagination {
     display: flex;
     justify-content: center;

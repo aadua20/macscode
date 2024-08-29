@@ -24,7 +24,9 @@ const ProblemList = ({ problems, getStatus }) => {
     const totalPages = Math.ceil(problems.length / problemsPerPage);
 
     const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
+        if (pageNumber >= 1 && pageNumber <= totalPages) {
+            setCurrentPage(pageNumber);
+        }
     };
 
     return (
@@ -46,15 +48,60 @@ const ProblemList = ({ problems, getStatus }) => {
             </ul>
             {totalPages > 1 && (
                 <div className="pagination">
-                    {Array.from({ length: totalPages }, (_, index) => (
+                    {currentPage > 1 && (
                         <button
-                            key={index + 1}
-                            className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}
-                            onClick={() => handlePageChange(index + 1)}
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage - 1)}
                         >
-                            {index + 1}
+                            &laquo;
                         </button>
-                    ))}
+                    )}
+                    {Array.from({ length: totalPages }, (_, index) => {
+                        if (totalPages > 5) {
+                            if (index + 1 === currentPage || index + 1 === 1 || index + 1 === totalPages) {
+                                return (
+                                    <button
+                                        key={index + 1}
+                                        className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}
+                                        onClick={() => handlePageChange(index + 1)}
+                                    >
+                                        {index + 1}
+                                    </button>
+                                );
+                            } else if (index + 1 === currentPage - 1 || index + 1 === currentPage + 1) {
+                                return (
+                                    <button
+                                        key={index + 1}
+                                        className="pagination-button"
+                                        onClick={() => handlePageChange(index + 1)}
+                                    >
+                                        {index + 1}
+                                    </button>
+                                );
+                            } else if (index + 1 === currentPage - 2 || index + 1 === currentPage + 2) {
+                                return <span key={index + 1}>...</span>;
+                            } else {
+                                return null;
+                            }
+                        } else {
+                            return (
+                                <button
+                                    key={index + 1}
+                                    className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}
+                                    onClick={() => handlePageChange(index + 1)}
+                                >
+                                    {index + 1}
+                                </button>
+                            );
+                        }
+                    })}
+                    {currentPage < totalPages && (
+                        <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage + 1)}
+                        >&raquo;
+                        </button>
+                    )}
                 </div>
             )}
         </div>
