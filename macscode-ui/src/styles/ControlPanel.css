@@ -138,12 +138,13 @@
 }
 
 .control-panel-delete-button, .control-panel-make-admin-button {
-    background-color: red;
+    background-color: #8d1c1c;
     color: white;
     border: none;
     padding: 5px 4vw;
     border-radius: 4px;
     cursor: pointer;
+    font-weight: bold;
     transition: background-color 0.3s;
 }
 
@@ -193,14 +194,24 @@
     margin-right: 8.5vw;
 }
 
+.control-panel-problem-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
 
 .control-panel-problem-item {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 2fr 1fr  1fr 1.8fr 1fr;
     align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid grey;
+    padding: 10px 15px;
     transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.control-panel-problem-item:nth-child(odd) {
+    background-color: #2d2f34;
 }
 
 .control-panel-problem-item:last-child {
@@ -209,6 +220,13 @@
 
 .control-panel-problem-item:hover {
     background-color: #3a3a3a;
+}
+
+.control-panel-problem-name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: 0 10px;
 }
 
 .control-panel-column {
