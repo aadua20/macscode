@@ -75,6 +75,33 @@
     margin: 0;
 }
 
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination-button {
+    background-color: #888888;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.pagination-button:hover {
+    background-color: #e0e0e0;
+    color: black;
+}
+
+.pagination-button.active {
+    background-color: orange;
+    color: black;
+}
+
 .control-panel-pagination {
     display: flex;
     justify-content: center;
