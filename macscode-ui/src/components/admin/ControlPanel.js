@@ -1,12 +1,12 @@
-import React, {useState, useEffect, useCallback, useContext} from 'react';
+import React, { useState, useEffect, useCallback, useContext } from 'react';
 import axios from 'axios';
 import '../../styles/ControlPanel.css';
 import TopBar from '../TopBar';
-import {AuthContext} from "../../AuthContext";
-import {useNavigate} from "react-router-dom";
+import { AuthContext } from "../../AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const ControlPanel = () => {
-    const {auth} = useContext(AuthContext);
+    const { auth } = useContext(AuthContext);
     const [activeTab, setActiveTab] = useState('manage-users');
     const [users, setUsers] = useState([]);
     const [filteredUsers, setFilteredUsers] = useState([]);
@@ -15,6 +15,7 @@ const ControlPanel = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [usersPerPage, setUsersPerPage] = useState(10);
     const problemsPerPage = 10;
     const [confirmAction, setConfirmAction] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -66,10 +67,12 @@ const ControlPanel = () => {
             setFilteredUsers(
                 users.filter(user => user.username.toLowerCase().includes(searchTerm.toLowerCase()))
             );
+            setCurrentPage(1);
         } else if (activeTab === 'manage-problems') {
             setFilteredProblems(
                 problems.filter(problem => problem.name.toLowerCase().includes(searchTerm.toLowerCase()))
             );
+            setCurrentPage(1);
         }
     }, [searchTerm, activeTab, users, problems]);
 
@@ -132,7 +135,7 @@ const ControlPanel = () => {
 
     const confirmMakeAdmin = (username) => {
         if (window.confirm("Are you sure you want to make this user Admin?")) {
-            handleMakeAdmin(username)
+            handleMakeAdmin(username);
         }
     };
 
@@ -143,7 +146,12 @@ const ControlPanel = () => {
     const indexOfLastProblem = currentPage * problemsPerPage;
     const indexOfFirstProblem = indexOfLastProblem - problemsPerPage;
     const currentProblems = filteredProblems.slice(indexOfFirstProblem, indexOfLastProblem);
-    const totalPages = Math.ceil(filteredProblems.length / problemsPerPage);
+    const totalProblemPages = Math.ceil(filteredProblems.length / problemsPerPage);
+
+    const indexOfLastUser = currentPage * usersPerPage;
+    const indexOfFirstUser = indexOfLastUser - usersPerPage;
+    const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+    const totalUserPages = Math.ceil(filteredUsers.length / usersPerPage);
 
     const renderContent = () => {
         if (isLoading) return <p>Loading...</p>;
@@ -161,7 +169,7 @@ const ControlPanel = () => {
                         className="search-bar"
                     />
                     <ul className="control-panel-user-list">
-                        {filteredUsers.map(user => (
+                        {currentUsers.map(user => (
                             <li
                                 key={user.username}
                                 className="control-panel-user-item"
@@ -191,6 +199,19 @@ const ControlPanel = () => {
                             </li>
                         ))}
                     </ul>
+                    {totalUserPages > 1 && (
+                        <div className="pagination">
+                            {Array.from({ length: totalUserPages }, (_, index) => (
+                                <button
+                                    key={index + 1}
+                                    className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}
+                                    onClick={() => handlePageChange(index + 1)}
+                                >
+                                    {index + 1}
+                                </button>
+                            ))}
+                        </div>
+                    )}
                 </div>
             );
         } else if (activeTab === 'manage-problems') {
@@ -225,9 +246,9 @@ const ControlPanel = () => {
                             </li>
                         ))}
                     </ul>
-                    {totalPages > 1 && (
+                    {totalProblemPages > 1 && (
                         <div className="pagination">
-                            {Array.from({length: totalPages}, (_, index) => (
+                            {Array.from({ length: totalProblemPages }, (_, index) => (
                                 <button
                                     key={index + 1}
                                     className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}
@@ -245,7 +266,7 @@ const ControlPanel = () => {
 
     return (
         <div className="control-panel-container">
-            <TopBar/>
+            <TopBar />
             <div className="control-panel-tabs-container">
                 <div
                     className={`control-panel-tab ${activeTab === 'manage-users' ? 'control-panel-active' : ''}`}
