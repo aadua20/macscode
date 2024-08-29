@@ -7,11 +7,9 @@ import TestCases from './TestCases';
 import ResultsModal from './ResultsModal';
 import Submissions from './Submissions';
 import '../styles/Problem.css';
-import {Client} from '@stomp/stompjs';
 import '../styles/Karel.css';
 import TopBar from './TopBar';
 import Comments from './Comments';
-import {v4 as uuidv4} from 'uuid';
 import {jwtDecode} from 'jwt-decode';
 import AllSubmissions from "./admin/AllSubmissions";
 

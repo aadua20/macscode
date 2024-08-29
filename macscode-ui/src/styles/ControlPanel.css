@@ -69,19 +69,19 @@
     background-color: #3a3a3a;
 }
 
-.problem-list {
+.control-panel-problem-list {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.pagination {
+.control-panel-pagination {
     display: flex;
     justify-content: center;
     margin-top: 20px;
 }
 
-.pagination-button {
+.control-panel-pagination-button {
     background-color: #888888;
     border: none;
     color: white;
@@ -92,12 +92,12 @@
     transition: background-color 0.3s;
 }
 
-.pagination-button:hover {
+.control-panel-pagination-button:hover {
     background-color: #e0e0e0;
     color: black;
 }
 
-.pagination-button.active {
+.control-panel-pagination-button.active {
     background-color: orange;
     color: black;
 }
@@ -110,7 +110,7 @@
     border-bottom: 1px solid #ddd;
 }
 
-.delete-button, .make-admin-button {
+.control-panel-delete-button, .control-panel-make-admin-button {
     background-color: red;
     color: white;
     border: none;
@@ -120,17 +120,17 @@
     transition: background-color 0.3s;
 }
 
-.delete-button:hover {
+.control-panel-delete-button:hover {
     background-color: darkred;
 }
 
-.make-admin-button {
+.control-panel-make-admin-button {
     background-color: gold;
     color: black;
     margin-right: 3vw;
 }
 
-.make-admin-button:hover {
+.control-panel-make-admin-button:hover {
     background-color: goldenrod;
 }
 
@@ -138,7 +138,7 @@
     cursor: pointer;
 }
 
-.search-bar {
+.control-panel-search-bar {
     width: 20%;
     padding: 10px;
     margin-bottom: 20px;
@@ -150,20 +150,45 @@
     transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
-.search-bar::placeholder {
+.control-panel-search-bar::placeholder {
     color: #999;
 }
 
-.search-bar:focus {
+.control-panel-search-bar:focus {
     border-color: #f5a623;
     background-color: #555;
     outline: none;
 }
 
-.admin-star {
+.control-panel-admin-star {
     color: gold;
     font-size: 1.5em;
     margin-right: 8.5vw;
 }
 
 
+.control-panel-problem-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s;
+}
+
+.control-panel-problem-item:last-child {
+    border-bottom: none;
+}
+
+.control-panel-problem-item:hover {
+    background-color: #3a3a3a;
+}
+
+.control-panel-column {
+    flex: 1;
+    padding: 0 10px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
