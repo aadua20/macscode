@@ -1,25 +1,26 @@
-import React, { useState, useEffect, useCallback, useContext } from 'react';
+import React, {useState, useEffect, useCallback, useContext} from 'react';
 import axios from 'axios';
 import '../../styles/ControlPanel.css';
 import TopBar from '../TopBar';
-import { AuthContext } from "../../AuthContext";
-import { useNavigate } from "react-router-dom";
+import {AuthContext} from "../../AuthContext";
+import {useNavigate} from "react-router-dom";
 
 const ControlPanel = () => {
-    const { auth } = useContext(AuthContext);
+    const {auth} = useContext(AuthContext);
     const [activeTab, setActiveTab] = useState('manage-users');
     const [users, setUsers] = useState([]);
+    const [filteredUsers, setFilteredUsers] = useState([]);
     const [problems, setProblems] = useState([]);
+    const [filteredProblems, setFilteredProblems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [filteredResults, setFilteredResults] = useState([]);
-    const [sortConfig, setSortConfig] = useState({ key: 'title', direction: 'asc' });
     const [currentPage, setCurrentPage] = useState(1);
     const problemsPerPage = 10;
     const [confirmAction, setConfirmAction] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
 
-    const fetchUsers = async () => {
+    const fetchUsers = useCallback(async () => {
         try {
             const response = await axios.get('/auth/users/all', {
                 headers: {
@@ -27,12 +28,13 @@ const ControlPanel = () => {
                 }
             });
             setUsers(response.data);
+            setFilteredUsers(response.data);
         } catch (err) {
             setError(err.message);
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [auth]);
 
     const fetchProblems = useCallback(async () => {
         try {
@@ -42,40 +44,14 @@ const ControlPanel = () => {
                 }
             });
             let data = response.data;
-            if (sortConfig.key) {
-                data = sortProblems(data, sortConfig);
-            }
             setProblems(data);
-            setFilteredResults(data);
+            setFilteredProblems(data);
         } catch (err) {
             setError(err.message);
         } finally {
             setIsLoading(false);
         }
-    }, [sortConfig, auth]);
-
-    const sortProblems = useCallback((problems, { key, direction }) => {
-        const difficultyOrder = { 'easy': 1, 'medium': 2, 'hard': 3 };
-        if (!key || direction === 'none') return problems;
-
-        return [...problems].sort((a, b) => {
-            if (key === 'title') {
-                const orderA = a.problemId.order;
-                const orderB = b.problemId.order;
-                return direction === 'asc' ? orderA - orderB : orderB - orderA;
-            } else if (key === 'difficulty') {
-                const rankA = difficultyOrder[a.difficulty.toLowerCase()];
-                const rankB = difficultyOrder[b.difficulty.toLowerCase()];
-                return direction === 'asc' ? rankA - rankB : rankB - rankA;
-            } else {
-                const itemA = a[key].toLowerCase();
-                const itemB = b[key].toLowerCase();
-                if (itemA < itemB) return direction === 'asc' ? -1 : 1;
-                if (itemA > itemB) return direction === 'asc' ? 1 : -1;
-                return 0;
-            }
-        });
-    }, []);
+    }, [auth]);
 
     useEffect(() => {
         if (activeTab === 'manage-problems') {
@@ -84,6 +60,18 @@ const ControlPanel = () => {
             fetchUsers();
         }
     }, [activeTab, fetchProblems]);
+
+    useEffect(() => {
+        if (activeTab === 'manage-users') {
+            setFilteredUsers(
+                users.filter(user => user.username.toLowerCase().includes(searchTerm.toLowerCase()))
+            );
+        } else if (activeTab === 'manage-problems') {
+            setFilteredProblems(
+                problems.filter(problem => problem.name.toLowerCase().includes(searchTerm.toLowerCase()))
+            );
+        }
+    }, [searchTerm, activeTab, users, problems]);
 
     const handleProblemClick = (problem) => {
         navigate(`/problem/${problem.problemId.course}/${problem.problemId.order}`);
@@ -97,7 +85,7 @@ const ControlPanel = () => {
                 }
             });
             setProblems(problems.filter(problem => problem.id !== problemId));
-            setFilteredResults(filteredResults.filter(problem => problem.id !== problemId));
+            setFilteredProblems(filteredProblems.filter(problem => problem.id !== problemId));
         } catch (err) {
             setError(err.message);
         }
@@ -117,6 +105,7 @@ const ControlPanel = () => {
                 }
             });
             setUsers(users.filter(user => user.username !== username));
+            setFilteredUsers(filteredUsers.filter(user => user.username !== username));
         } catch (err) {
             setError(err.message);
         }
@@ -153,8 +142,8 @@ const ControlPanel = () => {
 
     const indexOfLastProblem = currentPage * problemsPerPage;
     const indexOfFirstProblem = indexOfLastProblem - problemsPerPage;
-    const currentProblems = filteredResults.slice(indexOfFirstProblem, indexOfLastProblem);
-    const totalPages = Math.ceil(filteredResults.length / problemsPerPage);
+    const currentProblems = filteredProblems.slice(indexOfFirstProblem, indexOfLastProblem);
+    const totalPages = Math.ceil(filteredProblems.length / problemsPerPage);
 
     const renderContent = () => {
         if (isLoading) return <p>Loading...</p>;
@@ -164,8 +153,15 @@ const ControlPanel = () => {
             return (
                 <div>
                     <h3>User List</h3>
+                    <input
+                        type="text"
+                        placeholder="Search Users"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="search-bar"
+                    />
                     <ul className="control-panel-user-list">
-                        {users.map(user => (
+                        {filteredUsers.map(user => (
                             <li
                                 key={user.username}
                                 className="control-panel-user-item"
@@ -201,6 +197,13 @@ const ControlPanel = () => {
             return (
                 <div>
                     <h3>Problem List</h3>
+                    <input
+                        type="text"
+                        placeholder="Search Problems"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="search-bar"
+                    />
                     <ul className="problem-list">
                         {currentProblems.map((problem) => (
                             <li key={problem.id} className="problem-item" onClick={() => handleProblemClick(problem)}>
@@ -224,7 +227,7 @@ const ControlPanel = () => {
                     </ul>
                     {totalPages > 1 && (
                         <div className="pagination">
-                            {Array.from({ length: totalPages }, (_, index) => (
+                            {Array.from({length: totalPages}, (_, index) => (
                                 <button
                                     key={index + 1}
                                     className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}
@@ -242,7 +245,7 @@ const ControlPanel = () => {
 
     return (
         <div className="control-panel-container">
-            <TopBar />
+            <TopBar/>
             <div className="control-panel-tabs-container">
                 <div
                     className={`control-panel-tab ${activeTab === 'manage-users' ? 'control-panel-active' : ''}`}
