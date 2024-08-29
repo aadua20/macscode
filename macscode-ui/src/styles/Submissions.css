@@ -49,30 +49,6 @@
     background-color: #ffa500;
 }
 
-.pagination {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.pagination-button {
-    background-color: #013104;
-    border: none;
-    border-radius: 5px;
-    color: #fff;
-    padding: 5px 10px;
-    cursor: pointer;
-}
-
-.pagination-button.active {
-    background-color: #388e3c;
-}
-
-.pagination-button:hover {
-    background-color: #45a049;
-}
-
 .code-popup {
     position: fixed;
     top: 0;

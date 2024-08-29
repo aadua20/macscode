@@ -29,6 +29,10 @@ const ProblemList = ({ problems, getStatus }) => {
         }
     };
 
+    if (problems.length === 0) {
+        return <div className="no-message">No problems available</div>;
+    }
+
     return (
         <div>
             <ul className="problem-list">
