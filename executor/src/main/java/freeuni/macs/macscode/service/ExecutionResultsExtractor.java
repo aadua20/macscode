@@ -34,7 +34,7 @@ public class ExecutionResultsExtractor {
                 String result = readOneLineFromFile(currentPath);
                 if (result.contains(COMPILE_ERROR)) {
                     allTestCaseResults.add(new SingleTestCaseResult(i, result, extractCompileError(currentPath)));
-                } else if (result.contains(KAREL)) {
+                } else if (result.contains(KAREL) || result.contains(KAREL_CRASHED) || result.contains(NO_BEEPER)) {
                     allTestCaseResults.add(extractKarel(currentPath, prefixPath, i));
                 } else {
                     allTestCaseResults.add(new SingleTestCaseResult(i, result));
@@ -48,8 +48,9 @@ public class ExecutionResultsExtractor {
 
     private SingleTestCaseResult extractKarel(String filePath, String resultPath, int testNum) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
-        reader.readLine(); // Consume KAREL
-        String result = reader.readLine(); // Consume result
+        String result = reader.readLine();
+        if (result.equals(KAREL))
+            result = reader.readLine();
         BufferedReader instructionsReader = new BufferedReader(new FileReader(resultPath + "/instructions.txt"));
         StringBuilder compileInfoBuilder = new StringBuilder();
         for (String line = instructionsReader.readLine(); line != null; line = instructionsReader.readLine()) {

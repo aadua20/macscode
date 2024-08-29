@@ -8,6 +8,7 @@ import ResultsModal from './ResultsModal';
 import Submissions from './Submissions';
 import '../styles/Problem.css';
 import {Client} from '@stomp/stompjs';
+import '../styles/Karel.css';
 import TopBar from './TopBar';
 import Comments from './Comments';
 import {v4 as uuidv4} from 'uuid';
@@ -20,6 +21,7 @@ const Problem = () => {
     const [error, setError] = useState('');
     const [code, setCode] = useState('');
     const [testCases, setTestCases] = useState([]);
+    const [selectedTestCase, setSelectedTestCase] = useState(null);
     const [results, setResults] = useState([]);
     const [showResults, setShowResults] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,6 +30,7 @@ const Problem = () => {
     const [responseReceived, setResponseReceived] = useState(false);
     const [activeTab, setActiveTab] = useState('description');
     const [userRole, setUserRole] = useState('');
+    const [isDemo, setIsDemo] = useState(false);
 
     const clientRef = useRef(null);
     const discussionRef = useRef(null);
@@ -74,6 +77,7 @@ const Problem = () => {
                 setProblem(response.data);
                 setCode(response.data.solutionFileTemplate);
                 setTestCases(response.data.publicTestCases || []);
+                setSelectedTestCase(response.data.publicTestCases[0]);
             } catch (error) {
                 console.error('Error fetching problem', error);
                 setError('Error fetching problem details. Please try again later.');
@@ -87,7 +91,13 @@ const Problem = () => {
         setCode(newCode);
     };
 
-    const handleRun = () => {
+    const handleShowDemo = () => {
+        setIsDemo(true);
+        handleRun(true);
+    };
+
+    const handleRun = (demoMode) => {
+        setIsDemo(demoMode);
         if (!problem || isRunning) return;
 
         const submissionId = uuidv4();
@@ -95,7 +105,9 @@ const Problem = () => {
             const runResults = JSON.parse(message.body);
             setResults(runResults);
             setResponseReceived(true);
-            setShowResults(true);
+            if (!demoMode) {
+                setShowResults(true);
+            }
             setIsRunning(false);
         });
 
@@ -110,9 +122,14 @@ const Problem = () => {
         });
         setHasSubmitted(true);
         setResponseReceived(false);
+
+        if (demoMode && results[selectedTestCase.testNum - 1].result === 'COMPILE_ERROR') {
+            setShowResults(true);
+        }
     };
 
     const handleSubmit = () => {
+        setIsDemo(false);
         if (!problem || isSubmitting) return;
 
         const submissionId = uuidv4();
@@ -159,6 +176,10 @@ const Problem = () => {
         });
     };
 
+    const handleTestCaseSelect = (testCase) => {
+        setSelectedTestCase(testCase);
+    };
+
     if (error) {
         return <div className="error-message">{error}</div>;
     }
@@ -195,6 +216,15 @@ const Problem = () => {
                         )}
                     </div>
                     <div className="tab-content">
+                        {activeTab === 'description' && (
+                            <ProblemDetails
+                                problem={problem}
+                                selectedTestCase={selectedTestCase}
+                                results={results}
+                                isDemo={isDemo}
+                            />
+                        )}
+                        {activeTab === 'submissions' && <Submissions problemId={problem.id} />}
                         {activeTab === 'description' && <ProblemDetails problem={problem}/>}
                         {activeTab === 'submissions' && <Submissions problemId={problem.id}/>}
                         {activeTab === 'all-submissions' && userRole === 'ADMIN' && <AllSubmissions problemId={problem.id}/>}
@@ -209,7 +239,7 @@ const Problem = () => {
                         <div className="button-container">
                             <button
                                 className="run-button"
-                                onClick={handleRun}
+                                onClick={() => handleRun(false)}
                                 disabled={isRunning || isSubmitting}
                                 style={{
                                     opacity: isRunning || isSubmitting ? 0.5 : 1,
@@ -230,6 +260,18 @@ const Problem = () => {
                                 {isSubmitting ? <div className="loading-spinner"></div> : 'Submit'}
                             </button>
                             <button
+                                className="show-demo-button"
+                                onClick={handleShowDemo}
+                                disabled={isRunning || isSubmitting}
+                                style={{
+                                    opacity: isRunning || isSubmitting ? 0.5 : 1,
+                                    cursor: isRunning || isSubmitting ? 'not-allowed' : 'pointer',
+                                }}
+                            >
+                                Demo
+                            </button>
+
+                            <button
                                 className={`view-results-button ${hasSubmitted && responseReceived ? 'visible' : ''}`}
                                 onClick={() => setShowResults(true)}
                             >
@@ -238,7 +280,7 @@ const Problem = () => {
                         </div>
                     </div>
                     <div className="problem-right-lower">
-                        <TestCases testCases={testCases}/>
+                        <TestCases testCases={testCases} onSelect={handleTestCaseSelect}/>
                     </div>
                 </div>
             </div>
