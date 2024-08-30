@@ -63,7 +63,8 @@
 }
 
 .submitter-username {
-    flex: 2.5;
+    flex: 1;
+    font-weight: bold;
 }
 
 .view-code-button {
