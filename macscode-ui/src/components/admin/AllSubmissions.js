@@ -77,7 +77,7 @@ const AllSubmissions = ({problemId}) => {
             <div className="submissions-container">
                 <h3>Submissions</h3>
                 {submissions.length === 0 ? (
-                    <p className="no-submissions-message">There are No Submissions on This Problem</p>
+                    <p className="no-message">There are no submissions for this problem</p>
                 ) : (
                     <div className="submissions-list">
                         {currentSubmissions.map(submission => (
