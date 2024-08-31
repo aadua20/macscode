@@ -1,0 +1,88 @@
+.submissions-container {
+    min-height: 100px;
+    flex-grow: 1;
+    background-color: #292929;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.submissions-container h3 {
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.submissions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.submission-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #333;
+    border-radius: 5px;
+    align-items: center;
+}
+
+.submission-item div {
+    color: #e0e0e0;
+}
+
+.submission-item .problem-name {
+    flex: 2.5;
+}
+
+.submission-item .problem-name:hover {
+    transform: scale(1.02);;
+}
+
+.submission-item .result {
+    flex: 2;
+    font-weight: bold;
+    text-align: center;
+}
+
+.submission-item .date {
+    flex: 2;
+    text-align: center;
+}
+
+.submission-item .result.accepted {
+    color: #4CAF50;
+}
+
+.submission-item .result.rejected {
+    color: #F44336;
+}
+
+.submission-item:hover {
+    background-color: #3a3a3a;
+    cursor: pointer;
+}
+
+.submitter-username {
+    flex: 1;
+    font-weight: bold;
+}
+
+.view-code-button {
+    background-color: #ffb700;
+    border: none;
+    border-radius: 5px;
+    color: black;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.view-code-button:hover {
+    background-color: #e7ad65;
+}
+
+.no-submissions-message {
+    color: red;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.2em;
+}

@@ -1,6 +1,8 @@
 package com.freeuni.macs.controller;
 
 import com.freeuni.macs.model.*;
+import com.freeuni.macs.model.api.ProblemDto;
+import com.freeuni.macs.model.api.SubmitResponse;
 import com.freeuni.macs.service.ProblemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -8,7 +10,9 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +20,7 @@ import java.util.List;
 @Tag(name = "Problems", description = "The Problem API")
 @RestController()
 @RequestMapping("/problems")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ProblemController {
     private final ProblemService problemService;
 
@@ -73,5 +78,16 @@ public class ProblemController {
     @PostMapping(value = "/run")
     public List<SubmitResponse> runProblemOnPublicTests(@RequestBody SubmitRequest submission) {
         return problemService.runProblemOnPublicTests(submission);
+    }
+
+    @Operation(summary = "Delete problem by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "successful operation")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProblemById(@PathVariable("id") String id) {
+        ObjectId objId = new ObjectId(id);
+        problemService.deleteProblemById(objId);
+        return ResponseEntity.noContent().build(); // Returns 204 No Content if successful
     }
 }

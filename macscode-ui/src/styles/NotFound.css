@@ -1,0 +1,31 @@
+.not-found-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #252525;
+    color: #fff;
+    text-align: center;
+}
+
+.not-found-container h1 {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.not-found-container p {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+}
+
+.not-found-container .home-button {
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.not-found-container .home-button:hover {
+    transform: scale(1.1);
+}

@@ -12,9 +12,9 @@
     </properties>
     <version>0.0.1-SNAPSHOT</version>
     <modules>
-        <module>macscode</module>
         <module>auth-service</module>
         <module>executor</module>
         <module>problems</module>
+        <module>discussion-service</module>
     </modules>
 </project>

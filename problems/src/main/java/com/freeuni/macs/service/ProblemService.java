@@ -2,32 +2,47 @@ package com.freeuni.macs.service;
 
 import com.freeuni.macs.exception.ProblemNotFoundException;
 import com.freeuni.macs.model.*;
+import com.freeuni.macs.model.api.ProblemDto;
+import com.freeuni.macs.model.api.SubmitResponse;
+import com.freeuni.macs.model.api.TestDto;
 import com.freeuni.macs.repository.ProblemRepository;
+import com.freeuni.macs.repository.UserSubmissionRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class ProblemService {
     private final ProblemRepository problemRepository;
+    private final UserSubmissionRepository userSubmissionRepository;
     private final TestService testService;
-    private final String EXECUTION_API_URL;
+    private final RabbitMQProducer rabbitMQProducer;
+    private final RabbitMQResponseListener rabbitMQResponseListener;
 
     @Autowired
     public ProblemService(final ProblemRepository problemRepository,
+                          final UserSubmissionRepository userSubmissionRepository,
                           final TestService testService,
-                          final @Value("${execution.service.url}") String executionApiUrl) {
+                          final RabbitMQProducer rabbitMQProducer,
+                          final RabbitMQResponseListener rabbitMQResponseListener) {
         this.problemRepository = problemRepository;
         this.testService = testService;
-        this.EXECUTION_API_URL = executionApiUrl;
+        this.rabbitMQProducer = rabbitMQProducer;
+        this.rabbitMQResponseListener = rabbitMQResponseListener;
+        this.userSubmissionRepository = userSubmissionRepository;
     }
 
     private ProblemDto convertProblemToProblemDto(Problem problem) {
@@ -44,6 +59,7 @@ public class ProblemService {
         problemDto.setPublicTestCases(publicTests.stream()
                 .map(singleTest -> TestDto.builder()
                         .input(singleTest.getInput())
+                        .expectedOutput(singleTest.getOutput())
                         .testNum(singleTest.getTestNum())
                         .build())
                 .toList()
@@ -75,12 +91,17 @@ public class ProblemService {
                 .toList();
     }
 
+    public void deleteProblemById(ObjectId id) {
+        log.warn("Deleting Problem. ID: {}", id.toString());
+        problemRepository.deleteById(id);
+    }
+
     public List<SubmitResponse> submitProblem(final SubmitRequest solution) {
         ObjectId problemId = new ObjectId(solution.getProblemId());
         List<Test> problemTests = testService.getTestsByProblemId(problemId);
         Problem problem = getProblemById(problemId);
 
-        return runProblemOnTests(solution, problem, problemTests);
+        return runProblemOnTests(solution, problem, problemTests, true);
     }
 
     public List<SubmitResponse> runProblemOnPublicTests(final SubmitRequest solution) {
@@ -88,27 +109,40 @@ public class ProblemService {
         List<Test> problemPublicTests = testService.getPublicTestsByProblemId(problemId);
         Problem problem = getProblemById(problemId);
 
-        return runProblemOnTests(solution, problem, problemPublicTests);
+        return runProblemOnTests(solution, problem, problemPublicTests, false);
     }
 
-    private List<SubmitResponse> runProblemOnTests(SubmitRequest solution, Problem problem, List<Test> problemTests) {
+    private List<SubmitResponse> runProblemOnTests(SubmitRequest solution, Problem problem, List<Test> problemTests, boolean isSubmission) {
         SubmissionRequest submissionRequest = getSubmissionRequest(solution, problem, problemTests);
+        rabbitMQProducer.sendSubmissionRequest(submissionRequest);
+        List<SubmitResponse> responses;
+        try {
+            responses = rabbitMQResponseListener.getResponses();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
-        RestTemplate restTemplate = new RestTemplate();
+        if (isSubmission) {
+            assert responses != null;
+            UserSubmission submission = UserSubmission.builder()
+                    .submitterUsername(getCurrentUser())
+                    .problem(problem)
+                    .solutionFileContent(solution.getSolution())
+                    .submissionDate(new Date())
+                    .result(determineSubmissionResult(responses))
+                    .build();
+            userSubmissionRepository.save(submission);
+        }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<SubmissionRequest> requestEntity = new HttpEntity<>(submissionRequest, headers);
+        return responses;
+    }
 
-        ParameterizedTypeReference<List<SubmitResponse>> typeRef = new ParameterizedTypeReference<>() {
-        };
-        ResponseEntity<List<SubmitResponse>> responseEntity = restTemplate.exchange(
-                String.format("%s/submission", EXECUTION_API_URL),
-                HttpMethod.POST,
-                requestEntity,
-                typeRef);
-
-        return responseEntity.getBody();
+    private String determineSubmissionResult(List<SubmitResponse> submitResponses) {
+        return submitResponses.stream()
+                .map(SubmitResponse::getResult)
+                .filter(result -> !"PASS".equals(result))
+                .findFirst()
+                .orElse("ACCEPTED");
     }
 
     private Problem getProblemById(final ObjectId id) throws ProblemNotFoundException {
@@ -145,5 +179,16 @@ public class ProblemService {
                 submissionFiles,
                 problemTests,
                 problemType);
+    }
+
+    private String getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("Authentication: {}", authentication);
+
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            return userDetails.getUsername();
+        }
+        return "User not authenticated";
     }
 }
