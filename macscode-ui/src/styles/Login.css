@@ -1,9 +1,17 @@
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
 .login-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 100vh;
-    background: linear-gradient(to right, #1c1c1c, #434343); /* Advanced gradient background */
+    background: linear-gradient(-45deg, #1c1c1c, #434343, #0d0d0d, #2c2c2c);
+    background-size: 400% 400%;
+    animation: gradientAnimation 15s ease infinite; /* Smooth animation */
     color: #fff;
     position: relative;
     padding: 0 5%;
@@ -21,21 +29,24 @@
     width: 50%;
     padding-left: 50px;
     z-index: 1;
+    animation: moveText 15s ease infinite;
+}
+
+@keyframes moveText {
+    0% { transform: translateY(-50%) translateX(0%); }
+    50% { transform: translateY(-50%) translateX(5%); }
+    100% { transform: translateY(-50%) translateX(0%); }
 }
 
 .login-form {
-    width: 35%;
     background: rgba(255, 255, 255, 0.1);
     padding: 20px;
     border-radius: 10px;
     z-index: 2;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 30%;
     margin-left: auto;
-}
-
-.login-title {
-    margin-bottom: 20px;
-    text-align: center;
+    backdrop-filter: blur(5px);
 }
 
 .login-logo {
@@ -52,6 +63,12 @@
     border-radius: 5px;
     border: none;
     font-size: 1rem;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.login-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .login-button {
@@ -92,10 +109,4 @@
 
 .signup-link a:hover {
     text-decoration: underline;
-}
-
-.error-message {
-    color: red;
-    margin-bottom: 10px;
-    text-align: center;
 }
