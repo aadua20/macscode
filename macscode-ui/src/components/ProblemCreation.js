@@ -2,13 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import TopBar from "./TopBar";
 import '../styles/ProblemCreation.css';
 import '../styles/Difficulty.css';
-import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
-import {dracula} from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism'; // Updated import
 
 const ProblemCreation = () => {
     const [selectedTopics, setSelectedTopics] = useState([]);
     const [newTopic, setNewTopic] = useState('');
     const [difficulty, setDifficulty] = useState("Easy");
+    const [problemType, setProblemType] = useState("JAVA"); // State for problem type
     const [mainFile, setMainFile] = useState(null);
     const [solutionFile, setSolutionFile] = useState(null);
     const [viewFile, setViewFile] = useState(null);
@@ -32,6 +33,12 @@ const ProblemCreation = () => {
         setDifficulty(event.target.value);
     };
 
+    const handleProblemTypeChange = (event) => {
+        setProblemType(event.target.value);
+        setMainFile(null);
+        setSolutionFile(null);
+    };
+
     const handleFileChange = (event, fileType) => {
         const file = event.target.files[0];
         if (file) {
@@ -51,9 +58,14 @@ const ProblemCreation = () => {
                 setShowPopup(true);
             };
             reader.readAsText(file);
-            // Optionally set language based on file type or extension
-            setSelectedLanguage('javascript'); // Adjust language if needed
+            // Set language based on problem type
+            setSelectedLanguage(getFileLanguage(file.name));
         }
+    };
+
+    const getFileLanguage = (fileName) => {
+        if (problemType === 'CPP') return 'cpp';
+        return 'java'; // Default to 'java' for 'JAVA' and 'KAREL'
     };
 
     const closePopup = () => {
@@ -91,7 +103,12 @@ const ProblemCreation = () => {
                 </div>
                 <div className="form-group">
                     <label className="form-label" htmlFor="problemType">Type</label>
-                    <select id="problemType" className="form-control">
+                    <select
+                        id="problemType"
+                        className="form-control"
+                        value={problemType}
+                        onChange={handleProblemTypeChange}
+                    >
                         <option value="JAVA">JAVA</option>
                         <option value="CPP">CPP</option>
                         <option value="KAREL">KAREL</option>
@@ -130,22 +147,24 @@ const ProblemCreation = () => {
                         ))}
                     </ul>
                 </div>
-                <div className="form-group">
-                    <label className="form-label" htmlFor="mainFile">Main File</label>
-                    <div className="file-input-container">
-                        <input
-                            type="file"
-                            id="mainFile"
-                            className="form-control"
-                            onChange={(e) => handleFileChange(e, 'main')}
-                        />
-                        {mainFile && (
-                            <button type="button" className="view-file-button" onClick={() => handleViewFile(mainFile)}>
-                                View
-                            </button>
-                        )}
+                {problemType !== 'KAREL' && (
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="mainFile">Main File</label>
+                        <div className="file-input-container">
+                            <input
+                                type="file"
+                                id="mainFile"
+                                className="form-control"
+                                onChange={(e) => handleFileChange(e, 'main')}
+                            />
+                            {mainFile && (
+                                <button type="button" className="view-file-button" onClick={() => handleViewFile(mainFile)}>
+                                    View
+                                </button>
+                            )}
+                        </div>
                     </div>
-                </div>
+                )}
                 <div className="form-group">
                     <label className="form-label" htmlFor="solutionFile">Solution File</label>
                     <div className="file-input-container">
