@@ -1,0 +1,253 @@
+/* ProblemCreation.css */
+.problem-creation-container {
+    width: 70%; /* Increased width */
+    margin: 15vh auto 0;  /* Centered with vertical space */
+    padding: 40px; /* Increased padding for more space inside */
+    background: linear-gradient(135deg, #4b4848, #2e2b2b); /* Gradient background */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.problem-creation-title {
+    text-align: center;
+    color: #e8e8e8; /* Lighter text color */
+    margin-bottom: 20px;
+    font-size: 2.2rem; /* Increased font size */
+}
+
+.problem-creation-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #e0e0e0; /* Lighter text color */
+    font-size: 1.2rem; /* Increased font size */
+}
+
+.form-control {
+    padding: 12px;
+    font-size: 1rem; /* Increased input text size */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+    background-color: #3a3a3a; /* Darker background for inputs */
+    color: #f5f5f5; /* Lighter input text color */
+}
+
+.form-control:focus {
+    border-color: #0056b3;
+    outline: none;
+}
+
+.difficulty.easy {
+    color: #4CAF50; /* Green for Easy */
+}
+
+.difficulty.medium {
+    color: #FFC107; /* Amber for Medium */
+}
+
+.difficulty.hard {
+    color: #F44336; /* Red for Hard */
+}
+
+.topic-input-container {
+    display: flex;
+    gap: 10px;
+}
+
+.topic-input {
+    flex: 1;
+}
+
+.add-topic-button {
+    padding: 12px 24px;
+    background-color: #4CAF50; /* Green for Add Topic button */
+    color: #ffffff;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-topic-button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.topics-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* Space between topics */
+    margin-top: 10px;
+    padding: 0;
+    list-style-type: none;
+}
+
+.topics-list-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 18px; /* Increased padding for larger pill */
+    background-color: #4b4848;
+    border-radius: 20px; /* Rounded pill shape */
+    color: #f5f5f5;
+    font-size: 1rem; /* Larger font size */
+    white-space: nowrap; /* Prevent text from wrapping */
+}
+
+.topics-list-item::before {
+    content: '\2022'; /* Unicode bullet character */
+    color: #ffffff; /* Bullet color */
+    font-size: 1.4rem; /* Larger bullet size */
+    margin-right: 10px; /* Space between bullet and text */
+}
+
+.draft-button {
+    padding: 12px 24px;
+    background-color: #ff8800; /* Orange color for draft button */
+    color: #ffffff;
+    font-size: 1.2rem; /* Increased button text size */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    align-self: center;
+    transition: background-color 0.3s ease;
+}
+
+.draft-button:hover {
+    background-color: #e76e00; /* Darker orange on hover */
+}
+
+/* File Upload Styles */
+.form-control[type="file"] {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #3a3a3a;
+    color: #f5f5f5;
+}
+
+.form-control[type="file"]::file-selector-button {
+    background-color: #4CAF50; /* Button color for file input */
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.form-control[type="file"]::file-selector-button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    position: relative; /* Add relative positioning for proper button alignment */
+}
+
+.form-group .view-file-button {
+    padding: 6px 12px; /* Smaller padding for a smaller button */
+    font-size: 0.9rem; /* Smaller font size */
+    background-color: #007bff; /* Blue background color */
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    position: absolute; /* Absolute positioning */
+    right: 10px; /* Position to the right of the file input */
+    top: 50%; /* Center vertically relative to the file input */
+    transform: translateY(-50%); /* Center the button vertically */
+    transition: background-color 0.3s ease;
+}
+
+.form-group .view-file-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.file-input-container {
+    display: flex;
+    align-items: center;
+    position: relative; /* Position relative for the button alignment */
+}
+
+.file-input-container {
+    display: flex;
+    align-items: center;
+    position: relative; /* Position relative for the button alignment */
+}
+
+.file-input-container .form-control {
+    flex: 1; /* Allow file input to take available space */
+}
+
+.file-input-container .view-file-button {
+    padding: 6px 12px; /* Smaller padding for a smaller button */
+    font-size: 0.9rem; /* Smaller font size */
+    background-color: #007bff; /* Blue background color */
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px; /* Space between input and button */
+    transition: background-color 0.3s ease;
+}
+
+.file-input-container .view-file-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.code-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(73, 70, 70, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.code-popup-content {
+    position: relative;
+    background: #343434;
+    color: #dcdcdc;
+    border-radius: 10px;
+    padding: 20px;
+    width: 80%;
+    max-width: 80%;
+    max-height: 80%;
+    overflow-y: auto;
+}
+
+.code-popup-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.code-popup-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.code-popup-content::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+.code-popup-content::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+

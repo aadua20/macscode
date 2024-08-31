@@ -10,6 +10,7 @@ import NotFound from "./components/NotFound";
 import BlockedRoute from "./components/routes/BlockedRoute";
 import UserProfile from "./components/admin/UserProfile";
 import ControlPanel from "./components/admin/ControlPanel";
+import ProblemCreation from "./components/ProblemCreation";
 
 const AppRoutes = () => {
     return (
@@ -35,6 +36,12 @@ const AppRoutes = () => {
                         <Problem />
                     </PrivateRoute>
                 }
+            />
+            <Route path="/problem-setting" element={
+                <PrivateRoute>
+                    <ProblemCreation />
+                </PrivateRoute>
+            }
             />
             <Route
                 path="/profile/:username"
