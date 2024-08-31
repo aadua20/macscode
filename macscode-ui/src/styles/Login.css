@@ -11,7 +11,7 @@
     height: 100vh;
     background: linear-gradient(-45deg, #1c1c1c, #434343, #0d0d0d, #2c2c2c);
     background-size: 400% 400%;
-    animation: gradientAnimation 15s ease infinite; /* Smooth animation */
+    animation: gradientAnimation 15s ease infinite;
     color: #fff;
     position: relative;
     padding: 0 5%;
