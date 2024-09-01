@@ -3,20 +3,26 @@ import TopBar from "./TopBar";
 import '../styles/ProblemCreation.css';
 import '../styles/Difficulty.css';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism'; // Updated import
+import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const ProblemCreation = () => {
     const [selectedTopics, setSelectedTopics] = useState([]);
     const [newTopic, setNewTopic] = useState('');
     const [difficulty, setDifficulty] = useState("Easy");
-    const [problemType, setProblemType] = useState("JAVA"); // State for problem type
+    const [problemType, setProblemType] = useState("JAVA");
     const [mainFile, setMainFile] = useState(null);
     const [solutionFile, setSolutionFile] = useState(null);
+    const [testCases, setTestCases] = useState([{ input: null, output: null }]);
     const [viewFile, setViewFile] = useState(null);
     const [viewFileContent, setViewFileContent] = useState('');
     const [showPopup, setShowPopup] = useState(false);
-    const [selectedLanguage, setSelectedLanguage] = useState('javascript'); // Add language state
-    const popupRef = useRef(null); // Ref for the popup content
+    const [selectedLanguage, setSelectedLanguage] = useState('javascript');
+    const [showOutputFiles, setShowOutputFiles] = useState(false);
+    const popupRef = useRef(null);
+
+    const handleCheckboxChange = () => {
+        setShowOutputFiles(prevState => !prevState);
+    };
 
     const handleTopicsChange = (event) => {
         setNewTopic(event.target.value);
@@ -58,14 +64,13 @@ const ProblemCreation = () => {
                 setShowPopup(true);
             };
             reader.readAsText(file);
-            // Set language based on problem type
             setSelectedLanguage(getFileLanguage(file.name));
         }
     };
 
     const getFileLanguage = (fileName) => {
         if (problemType === 'CPP') return 'cpp';
-        return 'java'; // Default to 'java' for 'JAVA' and 'KAREL'
+        return 'java';
     };
 
     const closePopup = () => {
@@ -87,6 +92,36 @@ const ProblemCreation = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [showPopup]);
+
+    const handleDeleteTestCase = (index) => {
+        const updatedTestCases = testCases.filter((_, i) => i !== index);
+        setTestCases(updatedTestCases);
+    };
+
+    const addTestCase = () => {
+        setTestCases([...testCases, { input: null, output: null }]);
+    };
+
+    const handleTestCaseFileChange = (event, index, fileType) => {
+        const file = event.target.files[0];
+        if (file) {
+            const updatedTestCases = [...testCases];
+            updatedTestCases[index][fileType] = file;
+            setTestCases(updatedTestCases);
+        }
+    };
+
+    const handleViewTestCaseFile = (file) => {
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setViewFileContent(reader.result);
+                setShowPopup(true);
+            };
+            reader.readAsText(file);
+            setSelectedLanguage(getFileLanguage(file.name));
+        }
+    };
 
     return (
         <div className="problem-creation-container">
@@ -118,7 +153,7 @@ const ProblemCreation = () => {
                     <label className="form-label" htmlFor="difficulty">Difficulty</label>
                     <select
                         id="difficulty"
-                        className={`form-control difficulty ${difficulty.toLowerCase()}`}  // Apply dynamic class based on difficulty
+                        className={`form-control difficulty ${difficulty.toLowerCase()}`}
                         value={difficulty}
                         onChange={handleDifficultyChange}
                     >
@@ -181,7 +216,80 @@ const ProblemCreation = () => {
                         )}
                     </div>
                 </div>
-                <button type="button" className="draft-button">Draft</button>
+                <div className="form-group">
+                    <label className="form-label">Test Cases</label>
+                    <div className="checkbox-container">
+                        <input
+                            type="checkbox"
+                            id="showOutputFiles"
+                            className="checkbox-input"
+                            checked={showOutputFiles}
+                            onChange={handleCheckboxChange}
+                        />
+                        <label htmlFor="showOutputFiles" className="checkbox-label">Include Output Files</label>
+                    </div>
+
+                    <div className="test-cases-container">
+                        {testCases.map((testCase, index) => (
+                            <div key={index} className="test-case-container">
+                                <div className="test-case-files">
+                                    <span className="test-case-number">{index + 1}.</span>
+                                    <div className="form-group">
+                                        <label className="form-label">Input File</label>
+                                        <div className="file-input-container">
+                                            <input
+                                                type="file"
+                                                className="form-control"
+                                                onChange={(e) => handleTestCaseFileChange(e, index, 'input')}
+                                            />
+                                            {testCase.input && (
+                                                <button type="button" className="view-file-button"
+                                                        onClick={() => handleViewTestCaseFile(testCase.input)}>
+                                                    View
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                    {showOutputFiles && (
+                                        <div className="form-group">
+                                            <label className="form-label">Output File</label>
+                                            <div className="file-input-container">
+                                                <input
+                                                    type="file"
+                                                    className="form-control"
+                                                    onChange={(e) => handleTestCaseFileChange(e, index, 'output')}
+                                                />
+                                                {testCase.output && (
+                                                    <button type="button" className="view-file-button"
+                                                            onClick={() => handleViewTestCaseFile(testCase.output)}>
+                                                        View
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                                    <div>
+                                        <button
+                                            type="button"
+                                            className="delete-test-case-button"
+                                            onClick={() => handleDeleteTestCase(index)}
+                                        >
+                                            X
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                        <button type="button" className="add-test-case-button" onClick={addTestCase}>
+                            + Add Test Case
+                        </button>
+                    </div>
+
+
+                </div>
+                <div className="form-group">
+                <button type="submit" className="submit-button">Submit</button>
+                </div>
             </form>
             {showPopup && (
                 <div className="code-popup">
