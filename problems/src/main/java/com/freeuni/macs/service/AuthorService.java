@@ -1,7 +1,9 @@
 package com.freeuni.macs.service;
 
+import com.freeuni.macs.mapper.ProblemRequestMapper;
 import com.freeuni.macs.model.*;
 import com.freeuni.macs.model.api.InputOutputTestDto;
+import com.freeuni.macs.repository.ProblemDraftRepository;
 import com.freeuni.macs.repository.ProblemRepository;
 import com.freeuni.macs.repository.TestRepository;
 import org.bson.types.ObjectId;
@@ -15,14 +17,25 @@ public class AuthorService {
 
     private final ProblemRepository problemRepository;
     private final TestRepository testRepository;
+    private final ProblemDraftRepository problemDraftRepository;
 
     @Autowired
-    public AuthorService(ProblemRepository problemRepository, TestRepository testRepository) {
+    public AuthorService(ProblemRepository problemRepository, TestRepository testRepository, ProblemDraftRepository problemDraftRepository) {
         this.problemRepository = problemRepository;
         this.testRepository = testRepository;
+        this.problemDraftRepository = problemDraftRepository;
     }
 
     public void processUpload(UploadProblemRequest uploadProblemRequest) {
+        DraftProblem draftProblem = ProblemRequestMapper.convertToDraftProblem(uploadProblemRequest);
+        problemDraftRepository.save(draftProblem);
+    }
+
+    public List<DraftProblem> getAllDraftProblems() {
+        return problemDraftRepository.findAll();
+    }
+
+    public void processProblemPublish(UploadProblemRequest uploadProblemRequest) {
         Problem problem = saveProblem(uploadProblemRequest);
         saveTestCases(problem.getId(), uploadProblemRequest.getTestCases());
     }

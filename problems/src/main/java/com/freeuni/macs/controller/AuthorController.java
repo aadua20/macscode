@@ -1,9 +1,12 @@
 package com.freeuni.macs.controller;
 
+import com.freeuni.macs.model.DraftProblem;
 import com.freeuni.macs.model.UploadProblemRequest;
 import com.freeuni.macs.service.AuthorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -19,7 +22,11 @@ public class AuthorController {
     @PostMapping("/upload")
     public ResponseEntity<String> uploadProblem(@RequestBody UploadProblemRequest uploadProblemRequest) {
         authorService.processUpload(uploadProblemRequest);
-        return null;
+        return ResponseEntity.ok(null);
     }
 
+    @GetMapping("/drafts")
+    public List<DraftProblem> uploadProblem() {
+        return authorService.getAllDraftProblems();
+    }
 }
