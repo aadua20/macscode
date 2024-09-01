@@ -34,7 +34,7 @@ const ProblemDraftsList = () => {
     }, [auth]);
 
     const handleDraftClick = (draftId) => {
-        navigate(`/problem-creation/${draftId}`);
+        navigate(`/problem-creation?id=${draftId}`);
     };
 
     const handlePageChange = (pageNumber) => {

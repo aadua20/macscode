@@ -4,6 +4,7 @@ import '../styles/ProblemCreation.css';
 import '../styles/Difficulty.css';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { useLocation } from 'react-router-dom';
 
 const ProblemCreation = () => {
     const [selectedTopics, setSelectedTopics] = useState([]);
@@ -19,6 +20,42 @@ const ProblemCreation = () => {
     const [selectedLanguage, setSelectedLanguage] = useState('javascript');
     const [showOutputFiles, setShowOutputFiles] = useState(false);
     const popupRef = useRef(null);
+
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const draftId = queryParams.get('id');
+    useEffect(() => {
+        const fetchDrafts = async () => {
+            try {
+                const response = await fetch('/problems-service/authors/drafts');
+                const drafts = await response.json();
+                if (draftId) {
+                    const draft = drafts.find(d => d.id === draftId);
+                    if (draft) {
+                        populateFields(draft);
+                    }
+                } else {
+                    // Handle case where there's no specific draft ID
+                }
+            } catch (error) {
+                console.error('Error fetching drafts:', error);
+            }
+        };
+
+        fetchDrafts();
+    }, [draftId]);
+
+    const populateFields = (draft) => {
+        console.log(draft)
+        setSelectedTopics(draft.topics || []);
+        setNewTopic('');
+        setDifficulty(draft.difficulty || "Easy");
+        setProblemType(draft.problemType || "JAVA");
+        setMainFile(draft.mainFile || null);
+        setSolutionFile(draft.solutionFile || null);
+        setTestCases(draft.testCases || [{ input: null, output: null }]);
+        setShowOutputFiles(draft.showOutputFiles || false);
+    };
 
     const handleCheckboxChange = () => {
         setShowOutputFiles(prevState => !prevState);

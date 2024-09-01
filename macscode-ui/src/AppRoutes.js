@@ -55,14 +55,6 @@ const AppRoutes = () => {
                 }
             />
             <Route
-                path="/problem-creation/:id"
-                element={
-                    <PrivateRoute>
-                        <ProblemCreation />
-                    </PrivateRoute>
-                }
-            />
-            <Route
                 path="/profile/:username"
                 element={
                     <BlockedRoute requiredRole="ADMIN">
