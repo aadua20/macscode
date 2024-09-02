@@ -38,7 +38,9 @@ const ProblemDraftsList = () => {
     };
 
     const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
+        if (pageNumber >= 1 && pageNumber <= totalPages) {
+            setCurrentPage(pageNumber);
+        }
     };
 
     const indexOfLastDraft = currentPage * draftsPerPage;
@@ -72,15 +74,33 @@ const ProblemDraftsList = () => {
             )}
             {totalPages > 1 && (
                 <div className="pagination">
-                    {Array.from({ length: totalPages }, (_, index) => (
+                    {currentPage > 1 && (
                         <button
-                            key={index + 1}
-                            className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}
-                            onClick={() => handlePageChange(index + 1)}
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage - 1)}
                         >
-                            {index + 1}
+                            Prev
                         </button>
+                    )}
+                    {Array.from({ length: totalPages }, (_, index) => (
+                        (index + 1 <= 5 || index + 1 === currentPage || index + 1 === totalPages) && (
+                            <button
+                                key={index + 1}
+                                className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}
+                                onClick={() => handlePageChange(index + 1)}
+                            >
+                                {index + 1}
+                            </button>
+                        )
                     ))}
+                    {currentPage < totalPages && (
+                        <button
+                            className="pagination-button"
+                            onClick={() => handlePageChange(currentPage + 1)}
+                        >
+                            Next
+                        </button>
+                    )}
                 </div>
             )}
         </div>
