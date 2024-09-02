@@ -1,7 +1,6 @@
-import React, {useEffect, useState, useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import axios from 'axios';
 import {AuthContext} from '../AuthContext';
-import {useNavigate, useParams} from 'react-router-dom';
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import {dracula} from 'react-syntax-highlighter/dist/esm/styles/prism';
 import '../styles/Submissions.css';
@@ -14,7 +13,6 @@ const Submissions = ({problemId}) => {
     const [selectedCode, setSelectedCode] = useState(null);
     const [selectedLanguage, setSelectedLanguage] = useState('java');
     const [showCode, setShowCode] = useState(false);
-    const navigate = useNavigate();
     const submissionsPerPage = 5;
 
     useEffect(() => {
@@ -36,7 +34,7 @@ const Submissions = ({problemId}) => {
         if (auth) {
             fetchSubmissions();
         }
-    }, [auth]);
+    }, [auth, problemId]);
 
     const handleCodeClick = (solutionFileContent, language) => {
         setSelectedCode(solutionFileContent);
@@ -75,38 +73,88 @@ const Submissions = ({problemId}) => {
         <div className="submissions-page">
             <div className="submissions-container">
                 <h3>Submissions</h3>
-                <div className="submissions-list">
-                    {currentSubmissions.map(submission => (
-                        <div className="submission-item" key={submission.id.toString()}>
-                            <div className={`result ${submission.result === 'ACCEPTED' ? 'accepted' : 'rejected'}`}>
-                                {submission.result}
+                {submissions.length === 0 ? (
+                    <p className="no-message">You have no submissions for this problem</p>
+                ) : (
+                    <div className="submissions-list">
+                        {currentSubmissions.map(submission => (
+                            <div className="submission-item" key={submission.id.toString()}>
+                                <div style={{flex: 0.5}}
+                                     className={`result ${submission.result === 'ACCEPTED' ? 'accepted' : 'rejected'}`}>
+                                    {submission.result}
+                                </div>
+                                <div className="date">
+                                    {new Date(submission.submissionDate).toLocaleString('en-US', {
+                                        dateStyle: 'short',
+                                        timeStyle: 'short'
+                                    })}
+                                </div>
+                                <button
+                                    className="view-code-button"
+                                    onClick={() => handleCodeClick(submission.solutionFileContent, "java")}
+                                >
+                                    View Code
+                                </button>
                             </div>
-                            <div className="date">
-                                {new Date(submission.submissionDate).toLocaleString('en-US', {
-                                    dateStyle: 'short',
-                                    timeStyle: 'short'
-                                })}
-                            </div>
-                            <button
-                                className="view-code-button"
-                                onClick={() => handleCodeClick(submission.solutionFileContent, "java")}
-                            >
-                                View Code
-                            </button>
-                        </div>
-                    ))}
-                </div>
+                        ))}
+                    </div>
+                )}
                 {totalPages > 1 && (
                     <div className="pagination">
-                        {Array.from({length: totalPages}, (_, index) => (
+                        {currentPage > 1 && (
                             <button
-                                key={index + 1}
-                                className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}
-                                onClick={() => handlePageChange(index + 1)}
+                                className="pagination-button"
+                                onClick={() => handlePageChange(currentPage - 1)}
                             >
-                                {index + 1}
+                                &laquo;
                             </button>
-                        ))}
+                        )}
+                        {Array.from({ length: totalPages }, (_, index) => {
+                            if (totalPages > 5) {
+                                if (index + 1 === currentPage || index + 1 === 1 || index + 1 === totalPages) {
+                                    return (
+                                        <button
+                                            key={index + 1}
+                                            className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}
+                                            onClick={() => handlePageChange(index + 1)}
+                                        >
+                                            {index + 1}
+                                        </button>
+                                    );
+                                } else if (index + 1 === currentPage - 1 || index + 1 === currentPage + 1) {
+                                    return (
+                                        <button
+                                            key={index + 1}
+                                            className="pagination-button"
+                                            onClick={() => handlePageChange(index + 1)}
+                                        >
+                                            {index + 1}
+                                        </button>
+                                    );
+                                } else if (index + 1 === currentPage - 2 || index + 1 === currentPage + 2) {
+                                    return <span style={{ color: 'white' }}>...</span>;
+                                } else {
+                                    return null;
+                                }
+                            } else {
+                                return (
+                                    <button
+                                        key={index + 1}
+                                        className={`pagination-button ${currentPage === index + 1 ? 'active' : ''}`}
+                                        onClick={() => handlePageChange(index + 1)}
+                                    >
+                                        {index + 1}
+                                    </button>
+                                );
+                            }
+                        })}
+                        {currentPage < totalPages && (
+                            <button
+                                className="pagination-button"
+                                onClick={() => handlePageChange(currentPage + 1)}
+                            >&raquo;
+                            </button>
+                        )}
                     </div>
                 )}
             </div>

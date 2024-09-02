@@ -14,7 +14,7 @@
     flex: 2;
     background-color: #252525;
     color: #ffffff;
-    padding: 20px;
+    padding: 3vh;
     box-sizing: border-box;
     overflow-y: auto;
 }
@@ -29,36 +29,40 @@
 .problem-right-upper {
     flex: 0 0 47%;
     background-color: #252525;
-    padding: 20px;
+    padding: 3vh;
     box-sizing: border-box;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    min-height: 69vh;
+    max-height: 69vh;
 }
 
 .problem-right-lower {
     flex: 0 0 53%;
     background-color: #252525;
-    padding: 20px;
+    padding: 3vh;
     box-sizing: border-box;
     border-top: 1px solid #ccc;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    max-height: 80vh;
 }
 
 .button-container {
     display: flex;
     align-items: center;
-    margin-top: 10px;
+    margin-top: 2vh;
     flex-wrap: wrap;
 }
 
 .run-button,
+.show-demo-button,
 .submit-button {
     width: 7vw;
-    margin-right: 10px;
-    padding: 10px 20px;
+    margin-right: 1vw;
+    padding: 1vw 2vw;
     background-color: #007bff;
     color: #fff;
     border: none;
@@ -75,7 +79,7 @@
 .view-results-button {
     margin-left: auto;
     padding: 10px 20px;
-    background-color: #28a745;
+    background-color: green;
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -87,9 +91,8 @@
     display: block;
 }
 
-.error-message {
-    color: red;
-    padding: 20px;
+.view-results-button:hover {
+    background: seagreen;
 }
 
 .test-cases {
@@ -99,7 +102,6 @@
     background-color: #252525;
     color: #ffffff;
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .test-cases-tabs {
@@ -167,13 +169,14 @@
 
 .scroll-button {
     display: block;
-    margin: 25px auto;
+    margin: 20px 0 0 0;
     padding: 15px 30px;
     background-color: orange;
     color: white;
     border: none;
     border-radius: 25px;
-    font-size: 18px;
+    font-size: 16px;
+    font-weight: bold;
     cursor: pointer;
     text-align: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -181,7 +184,9 @@
 }
 
 .scroll-button:hover {
-    background-color: green;
+    background-color: white;
+    color: orange;
+    font-weight: bold;
     transform: translateY(-2px);
 }
 

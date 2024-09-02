@@ -1,35 +1,88 @@
-.submission-list {
-    background-color: #252525;
-    color: #ffffff;
+.submissions-container {
+    min-height: 100px;
+    flex-grow: 1;
+    background-color: #292929;
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+}
+
+.submissions-container h3 {
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.submissions-list {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    gap: 10px;
 }
 
-.submission-list h2 {
-    text-align: center;
-    color: #333333;
-}
-
-.submission-list ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.submission-list li {
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 10px;
+.submission-item {
+    display: flex;
+    justify-content: space-between;
     padding: 10px;
-    font-size: 18px;
-    color: #555555;
+    background-color: #333;
+    border-radius: 5px;
+    align-items: center;
 }
 
-.submission-list li:hover {
-    background-color: #f1f1f1;
+.submission-item div {
+    color: #e0e0e0;
+}
+
+.submission-item .problem-name {
+    flex: 2.5;
+}
+
+.submission-item .problem-name:hover {
+    transform: scale(1.02);;
+}
+
+.submission-item .result {
+    flex: 2;
+    font-weight: bold;
+    text-align: center;
+}
+
+.submission-item .date {
+    flex: 2;
+    text-align: center;
+}
+
+.submission-item .result.accepted {
+    color: #4CAF50;
+}
+
+.submission-item .result.rejected {
+    color: #F44336;
+}
+
+.submission-item:hover {
+    background-color: #3a3a3a;
     cursor: pointer;
+}
+
+.submitter-username {
+    flex: 1;
+    font-weight: bold;
+}
+
+.view-code-button {
+    background-color: #ffb700;
+    border: none;
+    border-radius: 5px;
+    color: black;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.view-code-button:hover {
+    background-color: #e7ad65;
+}
+
+.no-submissions-message {
+    color: red;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.2em;
 }
