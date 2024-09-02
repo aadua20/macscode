@@ -5,6 +5,7 @@ import '../styles/Difficulty.css';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 const ProblemCreation = () => {
     const [selectedTopics, setSelectedTopics] = useState([]);
@@ -23,6 +24,37 @@ const ProblemCreation = () => {
     const [mainFileContent, setMainFileContent] = useState('');
     const [solutionFileContent, setSolutionFileContent] = useState('');
 
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        const data = {
+            name: problemName,
+            description: problemDescription,
+            type: problemType,
+            difficulty: difficulty,
+            topics: selectedTopics,
+            showOutputFiles: showOutputFiles,
+            mainFile: mainFileContent,
+            solutionTemplateFile: solutionFileContent,
+            // testCases: testCases.map(testCase => ({
+            //     input: testCase.input ? testCase.input.name : null,
+            //     output: testCase.output ? testCase.output.name : null
+            // }))
+        };
+
+        try {
+            const response = await axios.post('/problems-service/authors/upload', data, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            console.log('Upload successful', response.data);
+        } catch (error) {
+            console.error('Error uploading problem:', error);
+        }
+    };
+
 
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -38,8 +70,6 @@ const ProblemCreation = () => {
                     if (draft) {
                         populateFields(draft);
                     }
-                } else {
-                    // Handle case where there's no specific draft ID
                 }
             } catch (error) {
                 console.error('Error fetching drafts:', error);
@@ -50,16 +80,13 @@ const ProblemCreation = () => {
     }, [draftId]);
 
     const populateFields = (draft) => {
-        console.log(draft)
         setProblemName(draft.name || ''); // Populate problem name
         setProblemDescription(draft.description || ''); // Populate problem description
         setSelectedTopics(draft.topics || []);
         setNewTopic('');
         setDifficulty(draft.difficulty || "Easy");
         setProblemType(draft.type || "JAVA");
-        console.log(draft.mainFile)
         if (draft.mainFile) {
-            console.log(draft.mainFile)
             setMainFileContent(draft.mainFile);
         }
         if (draft.solutionTemplateFile) {
@@ -360,7 +387,7 @@ const ProblemCreation = () => {
 
                 </div>
                 <div className="form-group">
-                <button type="submit" className="submit-button">Submit</button>
+                <button type="submit" className="submit-button" onClick={handleSubmit}>Submit</button>
                 </div>
             </form>
             {showPopup && (
