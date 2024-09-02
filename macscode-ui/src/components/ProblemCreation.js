@@ -11,19 +11,23 @@ const ProblemCreation = () => {
     const [newTopic, setNewTopic] = useState('');
     const [difficulty, setDifficulty] = useState("Easy");
     const [problemType, setProblemType] = useState("JAVA");
-    const [mainFile, setMainFile] = useState(null);
-    const [solutionFile, setSolutionFile] = useState(null);
     const [testCases, setTestCases] = useState([{ input: null, output: null }]);
     const [viewFile, setViewFile] = useState(null);
     const [viewFileContent, setViewFileContent] = useState('');
     const [showPopup, setShowPopup] = useState(false);
     const [selectedLanguage, setSelectedLanguage] = useState('javascript');
     const [showOutputFiles, setShowOutputFiles] = useState(false);
+    const [problemName, setProblemName] = useState(''); // New state
+    const [problemDescription, setProblemDescription] = useState(''); // New state
     const popupRef = useRef(null);
+    const [mainFileContent, setMainFileContent] = useState('');
+    const [solutionFileContent, setSolutionFileContent] = useState('');
+
 
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const draftId = queryParams.get('id');
+
     useEffect(() => {
         const fetchDrafts = async () => {
             try {
@@ -47,12 +51,20 @@ const ProblemCreation = () => {
 
     const populateFields = (draft) => {
         console.log(draft)
+        setProblemName(draft.name || ''); // Populate problem name
+        setProblemDescription(draft.description || ''); // Populate problem description
         setSelectedTopics(draft.topics || []);
         setNewTopic('');
         setDifficulty(draft.difficulty || "Easy");
-        setProblemType(draft.problemType || "JAVA");
-        setMainFile(draft.mainFile || null);
-        setSolutionFile(draft.solutionFile || null);
+        setProblemType(draft.type || "JAVA");
+        console.log(draft.mainFile)
+        if (draft.mainFile) {
+            console.log(draft.mainFile)
+            setMainFileContent(draft.mainFile);
+        }
+        if (draft.solutionTemplateFile) {
+            setSolutionFileContent(draft.solutionTemplateFile);
+        }
         setTestCases(draft.testCases || [{ input: null, output: null }]);
         setShowOutputFiles(draft.showOutputFiles || false);
     };
@@ -78,32 +90,33 @@ const ProblemCreation = () => {
 
     const handleProblemTypeChange = (event) => {
         setProblemType(event.target.value);
-        setMainFile(null);
-        setSolutionFile(null);
     };
 
     const handleFileChange = (event, fileType) => {
         const file = event.target.files[0];
         if (file) {
-            if (fileType === 'main') {
-                setMainFile(file);
-            } else if (fileType === 'solution') {
-                setSolutionFile(file);
-            }
+            const reader = new FileReader();
+            reader.onload = () => {
+                const content = reader.result;
+                if (fileType === 'main') {
+                    setMainFileContent(content);
+                } else if (fileType === 'solution') {
+                    setSolutionFileContent(content);
+                }
+            };
+            reader.readAsText(file);
         }
     };
 
-    const handleViewFile = (file) => {
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                setViewFileContent(reader.result);
-                setShowPopup(true);
-            };
-            reader.readAsText(file);
-            setSelectedLanguage(getFileLanguage(file.name));
+    const handleViewFile = (fileType) => {
+        if (fileType === 'main') {
+            setViewFileContent(mainFileContent);
+        } else if (fileType === 'solution') {
+            setViewFileContent(solutionFileContent);
         }
+        setShowPopup(true);
     };
+
 
     const getFileLanguage = (fileName) => {
         if (problemType === 'CPP') return 'cpp';
@@ -160,6 +173,14 @@ const ProblemCreation = () => {
         }
     };
 
+    const handleProblemNameChange = (event) => {
+        setProblemName(event.target.value);
+    };
+
+    const handleProblemDescriptionChange = (event) => {
+        setProblemDescription(event.target.value);
+    };
+
     return (
         <div className="problem-creation-container">
             <TopBar />
@@ -167,11 +188,25 @@ const ProblemCreation = () => {
             <form className="problem-creation-form">
                 <div className="form-group">
                     <label className="form-label" htmlFor="problemName">Problem Name</label>
-                    <input type="text" id="problemName" className="form-control" placeholder="Enter problem name" />
+                    <input
+                        type="text"
+                        id="problemName"
+                        className="form-control"
+                        placeholder="Enter problem name"
+                        value={problemName}
+                        onChange={handleProblemNameChange}
+                    />
                 </div>
                 <div className="form-group">
                     <label className="form-label" htmlFor="problemDescription">Problem Description</label>
-                    <textarea id="problemDescription" className="form-control" rows="4" placeholder="Enter problem description"></textarea>
+                    <textarea
+                        id="problemDescription"
+                        className="form-control"
+                        rows="4"
+                        placeholder="Enter problem description"
+                        value={problemDescription}
+                        onChange={handleProblemDescriptionChange}
+                    ></textarea>
                 </div>
                 <div className="form-group">
                     <label className="form-label" htmlFor="problemType">Type</label>
@@ -229,8 +264,8 @@ const ProblemCreation = () => {
                                 className="form-control"
                                 onChange={(e) => handleFileChange(e, 'main')}
                             />
-                            {mainFile && (
-                                <button type="button" className="view-file-button" onClick={() => handleViewFile(mainFile)}>
+                            {mainFileContent && (
+                                <button type="button" className="view-file-button" onClick={() => handleViewFile('main')}>
                                     View
                                 </button>
                             )}
@@ -246,8 +281,8 @@ const ProblemCreation = () => {
                             className="form-control"
                             onChange={(e) => handleFileChange(e, 'solution')}
                         />
-                        {solutionFile && (
-                            <button type="button" className="view-file-button" onClick={() => handleViewFile(solutionFile)}>
+                        {solutionFileContent && (
+                            <button type="button" className="view-file-button" onClick={() => handleViewFile('solution')}>
                                 View
                             </button>
                         )}
