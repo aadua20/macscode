@@ -25,8 +25,31 @@ public class AuthorController {
         return ResponseEntity.ok(null);
     }
 
+    @PostMapping("/change")
+    public ResponseEntity<String> changeProblem(@RequestParam("id") String id,
+            @RequestBody UploadProblemRequest uploadProblemRequest) {
+        authorService.changeProblem(id, uploadProblemRequest);
+        return ResponseEntity.ok(null);
+    }
+
+
+    @DeleteMapping("/drafts/{id}")
+    public ResponseEntity<Void> deleteDraft(@PathVariable String id) {
+        authorService.deleteDraft(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/drafts")
     public List<DraftProblem> uploadProblem() {
         return authorService.getAllDraftProblems();
+    }
+
+    @PostMapping("/publish")
+    public ResponseEntity<String> publishProblem(
+            @RequestParam(value = "id", required = false) String id,
+            @RequestBody UploadProblemRequest uploadProblemRequest) {
+
+        authorService.publishProblem(uploadProblemRequest, id);
+        return ResponseEntity.ok("Problem processed successfully");
     }
 }

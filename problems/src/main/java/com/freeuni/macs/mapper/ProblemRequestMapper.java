@@ -14,7 +14,6 @@ public class ProblemRequestMapper {
         draftProblem.setType(request.getType());
         draftProblem.setDifficulty(request.getDifficulty());
         draftProblem.setTopics(request.getTopics());
-        draftProblem.setCourse(request.getCourse());
         draftProblem.setSolutionTemplateFile(request.getSolutionTemplateFile());
         draftProblem.setMainFile(request.getMainFile());
         draftProblem.setTestCases(request.getTestCases());

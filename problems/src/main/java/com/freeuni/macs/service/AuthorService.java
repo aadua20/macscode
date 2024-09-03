@@ -31,17 +31,34 @@ public class AuthorService {
         problemDraftRepository.save(draftProblem);
     }
 
+    public void changeProblem(String id, UploadProblemRequest uploadProblemRequest) {
+        ObjectId objectId = new ObjectId(id);
+        problemDraftRepository.deleteById(objectId);
+        DraftProblem newDraftProblem = ProblemRequestMapper.convertToDraftProblem(uploadProblemRequest);
+        newDraftProblem.setId(id);
+        problemDraftRepository.save(newDraftProblem);
+    }
+
+
+    public void deleteDraft(String id) {
+        ObjectId objectId = new ObjectId(id);
+        problemDraftRepository.deleteById(objectId);
+    }
+
     public List<DraftProblem> getAllDraftProblems() {
         return problemDraftRepository.findAll();
     }
 
-    public void processProblemPublish(UploadProblemRequest uploadProblemRequest) {
+    public void publishProblem(UploadProblemRequest uploadProblemRequest, String id) {
+        if (id != null)
+            deleteDraft(id);
+        uploadProblemRequest.getTestCases().get(0).setPublic(true);
         Problem problem = saveProblem(uploadProblemRequest);
         saveTestCases(problem.getId(), uploadProblemRequest.getTestCases());
     }
 
     private Problem saveProblem(UploadProblemRequest request) {
-        Problem existingProblem = problemRepository.findTopByProblemIdCourseOrderByProblemIdOrderDesc(request.getCourse());
+        Problem existingProblem = problemRepository.findTopByProblemIdCourseOrderByProblemIdOrderDesc(getCourse(request.getType()));
         long newOrder = (existingProblem != null) ? existingProblem.getProblemId().getOrder() + 1 : 1;
 
         Problem problem = new Problem();
@@ -52,9 +69,20 @@ public class AuthorService {
         problem.setDifficulty(request.getDifficulty());
         problem.setMainFile(request.getMainFile());
         problem.setSolutionFileTemplate(request.getSolutionTemplateFile());
-        problem.setProblemId(new ProblemId(newOrder, request.getCourse()));
+
+        problem.setProblemId(new ProblemId(newOrder, getCourse(request.getType())));
 
         return problemRepository.save(problem);
+    }
+
+    private Course getCourse(String type) {
+        if ("KAREL".equals(type)) {
+            return Course.KAREL;
+        } else if ("CPP".equals(type)) {
+            return Course.ABS;
+        } else {
+            return Course.MET;
+        }
     }
 
     private void saveTestCases(ObjectId problemId, List<InputOutputTestDto> testCases) {

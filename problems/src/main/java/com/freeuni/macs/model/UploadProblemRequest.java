@@ -17,7 +17,6 @@ public class UploadProblemRequest {
     private String difficulty;
     private List<String> topics;
 
-    private Course course;
     private String solutionTemplateFile;
     private String mainFile;
     private List<InputOutputTestDto> testCases;

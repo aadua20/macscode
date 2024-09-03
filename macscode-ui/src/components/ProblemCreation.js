@@ -24,9 +24,44 @@ const ProblemCreation = () => {
     const [mainFileContent, setMainFileContent] = useState('');
     const [solutionFileContent, setSolutionFileContent] = useState('');
 
+    function readFileAsText(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(reader.error);
+            reader.readAsText(file);
+        });
+    }
+
+    async function processTestCases(testCases) {
+        let tests = [];
+
+        for (let i = 0; i < testCases.length; i++) {
+            let input = "";
+            let output = "";
+
+            if (testCases[i].input instanceof File) {
+                input = await readFileAsText(testCases[i].input);
+            }
+
+            if (testCases[i].output instanceof File) {
+                output = await readFileAsText(testCases[i].output);
+            }
+
+            tests.push({
+                testNum: i + 1,
+                isPublic: true,
+                input: input,
+                output: output
+            });
+        }
+
+        return tests;
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault();
-
+        const tests = await processTestCases(testCases);
         const data = {
             name: problemName,
             description: problemDescription,
@@ -36,20 +71,51 @@ const ProblemCreation = () => {
             showOutputFiles: showOutputFiles,
             mainFile: mainFileContent,
             solutionTemplateFile: solutionFileContent,
-            // testCases: testCases.map(testCase => ({
-            //     input: testCase.input ? testCase.input.name : null,
-            //     output: testCase.output ? testCase.output.name : null
-            // }))
+            testCases: tests
         };
 
         try {
-            const response = await axios.post('/problems-service/authors/upload', data, {
+            const urlParams = new URLSearchParams(window.location.search);
+            const hasId = urlParams.has('id');
+            const id = hasId ? urlParams.get('id') : null;
+            const url = hasId ? `/problems-service/authors/change?id=${id}` : '/problems-service/authors/upload';
+            const response = await axios.post(url, data, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
+            window.location.href = '/problem-drafts';
+        } catch (error) {
+            console.error('Error uploading problem:', error);
+        }
+    };
 
-            console.log('Upload successful', response.data);
+    const handlePublish = async (event) => {
+        event.preventDefault();
+        const tests = await processTestCases(testCases);
+        const data = {
+            name: problemName,
+            description: problemDescription,
+            type: problemType,
+            difficulty: difficulty,
+            topics: selectedTopics,
+            showOutputFiles: showOutputFiles,
+            mainFile: mainFileContent,
+            solutionTemplateFile: solutionFileContent,
+            testCases: tests
+        };
+
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const hasId = urlParams.has('id');
+            const id = hasId ? urlParams.get('id') : null;
+            const url = hasId ? `/problems-service/authors/publish?id=${id}` : '/problems-service/authors/publish';
+            const response = await axios.post(url, data, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            window.location.href = '/problem-drafts';
         } catch (error) {
             console.error('Error uploading problem:', error);
         }
@@ -386,13 +452,14 @@ const ProblemCreation = () => {
 
 
                 </div>
-                <div className="form-group">
-                <button type="submit" className="submit-button" onClick={handleSubmit}>Submit</button>
+                <div className="problemCreationButtons">
+                    <button type="submit" className="submit-button" onClick={handleSubmit}>Submit</button>
+                    <button type="submit" className="publish-button" onClick={handlePublish}>Publish</button>
                 </div>
             </form>
             {showPopup && (
                 <div className="code-popup">
-                    <div className="code-popup-content" ref={popupRef}>
+                <div className="code-popup-content" ref={popupRef}>
                         <SyntaxHighlighter language={selectedLanguage} style={dracula}>
                             {viewFileContent}
                         </SyntaxHighlighter>

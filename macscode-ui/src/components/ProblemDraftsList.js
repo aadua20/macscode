@@ -37,6 +37,21 @@ const ProblemDraftsList = () => {
         navigate(`/problem-creation?id=${draftId}`);
     };
 
+    const handleDeleteDraft = async (draftId) => {
+        try {
+            await axios.delete(`/problems-service/authors/drafts/${draftId}`, {
+                headers: {
+                    Authorization: `Bearer ${auth}`
+                },
+                data: { id: draftId }
+            });
+
+            setDrafts(drafts.filter(draft => draft.id !== draftId));
+        } catch (error) {
+            console.error('Error deleting draft', error);
+        }
+    };
+
     const handlePageChange = (pageNumber) => {
         if (pageNumber >= 1 && pageNumber <= totalPages) {
             setCurrentPage(pageNumber);
@@ -50,7 +65,7 @@ const ProblemDraftsList = () => {
 
     return (
         <div className="drafts-container">
-            <TopBar/>
+            <TopBar />
             <h3 className="drafts-title">Problem Drafts</h3>
             {drafts.length === 0 ? (
                 <p className="no-drafts">You have no drafts</p>
@@ -62,12 +77,20 @@ const ProblemDraftsList = () => {
                                 <div className="draft-id">ID: {draft.id}</div>
                                 <div className="draft-name">Name: {draft.name}</div>
                             </div>
-                            <button
-                                className="edit-draft-button"
-                                onClick={() => handleDraftClick(draft.id)}
-                            >
-                                Edit Draft
-                            </button>
+                            <div className="buttons">
+                                <button
+                                    className="edit-draft-button"
+                                    onClick={() => handleDraftClick(draft.id)}
+                                >
+                                    Edit Draft
+                                </button>
+                                <button
+                                    className="delete-draft-button" // New button
+                                    onClick={() => handleDeleteDraft(draft.id)}
+                                >
+                                    Delete
+                                </button>
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -82,7 +105,7 @@ const ProblemDraftsList = () => {
                             Prev
                         </button>
                     )}
-                    {Array.from({ length: totalPages }, (_, index) => (
+                    {Array.from({length: totalPages}, (_, index) => (
                         (index + 1 <= 5 || index + 1 === currentPage || index + 1 === totalPages) && (
                             <button
                                 key={index + 1}
