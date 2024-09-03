@@ -22,11 +22,13 @@ if [ $? -ne 0 ]; then
   exit
 fi
 
+ulimit -t 1
+
 for test_num in $(seq 1 "${test_count}")
 do
   java -classpath src/ Main tests/in_"${test_num}".txt tests/out_"${test_num}".txt result/result_"${test_num}".txt
-  mv result/instructions.txt result/instructions_"${test_num}".txt
   exit_code=$?
+  mv result/instructions.txt result/instructions_"${test_num}".txt
 
   echo ${exit_code}
 
@@ -34,5 +36,7 @@ do
     echo "KAREL_CRASHED" > result/result_"${test_num}".txt
   elif [[ ${exit_code} -eq 24 ]]; then
     echo "NO_BEEPER" > result/result_"${test_num}".txt
+  elif [[ ${exit_code} -eq 137 ]]; then
+    echo "TLE" > result/result_"${test_num}".txt
   fi
 done
