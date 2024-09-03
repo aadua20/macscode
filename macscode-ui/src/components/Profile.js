@@ -165,7 +165,7 @@ const Profile = () => {
         </div>;
     }
 
-    const methodologyCount = countAcceptedCodes('MET');
+    const methodologyCount = countAcceptedCodes('MET') + countAcceptedCodes('KAREL');
     const abstractionsCount = countAcceptedCodes('ABS');
 
     return (
@@ -210,7 +210,7 @@ const Profile = () => {
                             className="count">{abstractionsCount}</span> {abstractionsCount === 1 ? 'Problem Solved' : 'Problems Solved'}
                         </p>
                         {
-                            topicsCount.length > 0 &&
+                            Object.keys(topicsCount).length > 0 &&
                             <h4>Topics</h4>
                         }
                         <div className="topics-container">
