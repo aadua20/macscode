@@ -33,7 +33,7 @@ The project is organized into multiple services, each with its own purpose:
 
  **Clone the repository**:
 ```bash
-git clone https://github.com/yourusername/leetcode-like-app.git
+git clone https://github.com/aadua20/macscode.git
 cd docker
 docker-compose up -d
 ```
